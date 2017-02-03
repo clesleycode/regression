@@ -32,6 +32,7 @@ Brought to you by [Lesley Cordero](http://www.columbia.edu/~lc2958).
 	+ [7.1 Resources](#61-resources)
 	+ [7.2 More!](#72-more)
 
+## 0.0 Setup
 
 This guide was written in R 3.2.3.
 
