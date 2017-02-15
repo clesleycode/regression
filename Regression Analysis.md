@@ -9,20 +9,6 @@ Brought to you by [Lesley Cordero](http://www.columbia.edu/~lc2958).
 	+ [0.1 R and R Studio](#01-r-and-r-studio)
 	+ [0.2 Packages](#02-packages)
 - [1.0 Review](#10-review)
-- [2.0 Data Preparation](#30-data-preparation)
-	+ [2.1 dplyr](#31-dplyr)
-	+ [2.2 Geopandas](#32-geopandas)
-- [3.0 Exploratory Analysis](#30-exploratory-analysis)
-- [4.0 Data Visualization](#50-data-visualization)
-- [5.0 Machine Learning & Prediction](#50-machine-learning--prediction)
-	+ [5.1 Random Forests](#51-random-forests)
-	+ [5.2 Natural Language Processing](#52-natural-language-processing)
-		* [5.2.1 ANLP](#521-anlp)
-	+ [5.3 K Means Clustering](#53-k-means-clustering)
-- [6.0 Final Exercise]($60-final-exercise)
-- [7.0 Final Words](#60-final-words)
-	+ [7.1 Resources](#61-resources)
-	+ [7.2 More!](#72-more)
 
 ## 0.0 Setup
 
@@ -48,7 +34,9 @@ This will prompt a session in R! From here, you can install any needed packages.
 install.packages("")
 ```
 
-## 1.0 Review
+## 1.0 Introduction
+
+Regression Analysis is a predictive modeling technique for figuring out the relationship between a dependent and independent variable. This is used for forecasting, time series modeling, among others. 
 
 
 ### Random Variables
@@ -65,9 +53,15 @@ The probability distribution describes the distribution of a random variable and
 
 The correlation coefficient, <b>r</b> indicates the nature and strength of the relationship betwee x and y. Values of r range from -1 to +1. A correlation coefficient of 0 indicates there is no relationship.
 
+
 ## 2.0 Linear Regression
 
+In Linear Regression, the dependent variable is continuous, independent variable(s) can be continuous or discrete, and nature of regression line is linear. Linear Regression establishes a relationship between dependent variable (Y) and one or more independent variables (X) using a best fit straight line, also known as regression line.
+
+
+
 ### 2.1 Basic Equation
+
 The variable that we want to predict, `x`, is called the independent variable. We can collect values of y for known values of x in order to derive the co-efficient and y-intercept of the model using certain assumptions. The equation looks like below:
 
 ``` 
@@ -105,7 +99,6 @@ This refers to the idea that there is a constant variance of errors. This is tru
 
 This says that the distribution of errors is normal.
 
-
 ### 2.4 Correlation Coefficient 
 
 The standardized correlation coefficient is the same as Pearson's correlation coefficient. While correlation typically refers to Pearson’s correlation coefficient, there are other types of correlation, such as Spearman’s.
@@ -120,7 +113,8 @@ Thirdly, if a large number of variables are included, the model may become unrel
 
 Lastly, regression doesn’t work with categorical variables with multiple values. These variables need to be converted to other variables before using them in regression models.
 
-## Logistic Regression
+
+## 3.0 Logistic Regression
 
 Logistic regression is a generalized linear model most commonly used for classifying binary data.  Its output is a continuous range of values between 0 and 1 (commonly representing the probability of some event occurring), and its input can be a multitude of real-valued and discrete predictors.
 
