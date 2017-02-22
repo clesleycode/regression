@@ -1,7 +1,7 @@
 Intro to Regression Analysis 
 ==================
 
-Brought to you by [Lesley Cordero](http://www.columbia.edu/~lc2958).
+Brought to you by [Lesley Cordero](http://www.columbia.edu/~lc2958), [Byte Academy](byteacademy.co), and ADI (adicu.com).
 
 ## Table of Contents
 
