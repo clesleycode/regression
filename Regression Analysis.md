@@ -12,15 +12,21 @@ Brought to you by [Lesley Cordero](http://www.columbia.edu/~lc2958).
 
 ## 0.0 Setup
 
-This guide was written in R 3.2.3.
+This guide was written in R 3.2.3 and Python 3.5.
 
+### 0.1 Python & Pip
 
-### 0.1 R and R Studio
+Download [Python](https://www.python.org/downloads/) and [Pip](https://pip.pypa.io/en/stable/installing/).
 
-Download [R](https://www.r-project.org/) and [R Studio](https://www.rstudio.com/products/rstudio/download/).
+Let's install the modules we'll need for this tutorial. Open up your terminal and enter the following commands to install the needed python modules: 
 
+```
+pip3 install 
+```
 
-### 0.2 Packages
+### 0.2 R & R Studio
+
+Install [R](https://www.r-project.org/) and [R Studio](https://www.rstudio.com/products/rstudio/download/).
 
 Next, to install the R packages, cd into your workspace, and enter the following, very simple, command into your bash: 
 
@@ -114,9 +120,15 @@ Thirdly, if a large number of variables are included, the model may become unrel
 Lastly, regression doesn’t work with categorical variables with multiple values. These variables need to be converted to other variables before using them in regression models.
 
 
-## 3.0 Logistic Regression
+## 3.0 Multiple Linear Regression
 
-Logistic regression is a generalized linear model most commonly used for classifying binary data.  Its output is a continuous range of values between 0 and 1 (commonly representing the probability of some event occurring), and its input can be a multitude of real-valued and discrete predictors.
+Multiple linear regression is similar to simple linear regression, the only difference being the use of more than one input variable. 
+
+The assumptions are the same as for simple regression.
+
+## 4.0 Logistic Regression
+
+Logistic regression is a generalized linear model most commonly used for classifying binary data. Its output is a continuous range of values between 0 and 1 (commonly representing the probability of some event occurring), and its input can be a multitude of real-valued and discrete predictors.
 
 
 
