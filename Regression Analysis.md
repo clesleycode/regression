@@ -1,14 +1,33 @@
 Intro to Regression Analysis 
 ==================
 
-Brought to you by [Lesley Cordero](http://www.columbia.edu/~lc2958), [Byte Academy](byteacademy.co), and ADI (adicu.com).
+Brought to you by [Lesley Cordero](http://www.columbia.edu/~lc2958), [Byte Academy](byteacademy.co), and [ADI](adicu.com).
 
 ## Table of Contents
 
 - [0.0 Setup](#00-setup)
 	+ [0.1 R and R Studio](#01-r-and-r-studio)
 	+ [0.2 Packages](#02-packages)
-- [1.0 Review](#10-review)
+	+ [0.3 Virtual Environment](#03-virtual-environment)	
+- [1.0 Introduction](#10-introduction)
+	+ [1.1 Random Variables](#11-random-variables)
+	+ [1.2 Probability Distribution](#12-probability-distribution)
+	+ [1.3 Correlation Coefficient](#13-correlation-coefficient)
+- [2.0 Linear Regression](#20-linear-regression)
+	+ [2.1 Basic Equation](#21-basic-equation)
+	+ [2.2 Error Term](#22-error-term)
+	+ [2.3 Assumptions](#23-assumptions)
+		* [2.3.1 Linearity](#231-linearity)
+		* [2.3.2 Statistical Independence](#232-statistical-independence)
+		* [2.3.3 Homoscedasticity](#233-homoscedasticity)
+		* [2.3.4 Error Distribution](#234-error-distribution)
+	+ [2.4 Correlation Coefficient](#correlation-coefficient)
+	+ [2.5 Disadvantages](#25-disadvantages)
+- [3.0 Multiple Linear Regression](#30-multiple-linear-regression)
+- [4.0 Logistic Regression](#40-logistic-regression)
+- [5.0 Final Words](#50-final-words)
+	+ [5.1 Resources](#51-resources)
+
 
 ## 0.0 Setup
 
@@ -57,7 +76,7 @@ The probability distribution describes the distribution of a random variable and
 
 ### Correlation Coefficient
 
-The correlation coefficient, <b>r</b> indicates the nature and strength of the relationship betwee x and y. Values of r range from -1 to +1. A correlation coefficient of 0 indicates there is no relationship.
+The correlation coefficient, <b>r</b> indicates the nature and strength of the relationship between x and y. Values of r range from -1 to +1. A correlation coefficient of 0 indicates there is no relationship.
 
 
 ## 2.0 Linear Regression
@@ -83,7 +102,7 @@ y = a + bx
 
 The difference between the observed value of the dependent variable and the predicted value is called the error term, or residual. Each data point has its own residual.
 
-When a residual plot shows a random pattern, it indicated a good fit for a linear model.
+When a residual plot shows a random pattern, it indicated a good fit for a linear model. The error, or loss, function specifics depends on the type of machine learning algorithm. In Regression, it's (y - y&#770;)<sup>2</sup>, known as the <b>squared</b> loss. Note that the loss function is something that you must decide on based on the goals of learning. 
 
 ### 2.3 Assumptions
 
@@ -109,7 +128,19 @@ This says that the distribution of errors is normal.
 
 The standardized correlation coefficient is the same as Pearson's correlation coefficient. While correlation typically refers to Pearson’s correlation coefficient, there are other types of correlation, such as Spearman’s.
 
-### 2.5 Disadvantages
+### 2.5 Variance
+
+Recall that variance gives us an idea of the range or spread of our data and that we denote this value as &sigma;<sup>2</sup>. In the context of regression, this matters because it gives us an idea of how accurate our model is.
+
+For example, given the two graphs below, we can see that the second graph would be a more accurate model. 
+
+![alt text](temp1 "Logo Title Text 1")
+
+![alt text](temp2 "Logo Title Text 1")
+
+To figure out how precise future predictions will be, we then need to see how much the outputs very around the mean population regression line. Unfortunately, as &sigma;<sup>2</sup> is a population parameter, so we will rarely know its true value - that means we have to estimate it. 
+
+## 2.6 Disadvantages
 
 Firstly, if the data doesn't follow the normal distribution, the validity of the regression model suffers. 
 
@@ -119,17 +150,25 @@ Thirdly, if a large number of variables are included, the model may become unrel
 
 Lastly, regression doesn’t work with categorical variables with multiple values. These variables need to be converted to other variables before using them in regression models.
 
+## 3.0 Non Linear Regression
 
-## 3.0 Multiple Linear Regression
+Non-linear regression analysis uses a curved function, usually a polynomial, to capture the non-linear relationship between the two variables. The regression is often constructed by optimizing the parameters of a higher-order polynomial such that the line best fits a sample of (x, y) observations.
+
+## 4.0 Multiple Linear Regression
 
 Multiple linear regression is similar to simple linear regression, the only difference being the use of more than one input variable. 
 
 The assumptions are the same as for simple regression.
 
-## 4.0 Logistic Regression
 
-Logistic regression is a generalized linear model most commonly used for classifying binary data. Its output is a continuous range of values between 0 and 1 (commonly representing the probability of some event occurring), and its input can be a multitude of real-valued and discrete predictors.
+## 5.0 Logistic Regression
 
+Logistic Regression is a statistical technique capable of predicting a <b>binary</b> outcome. It’s output is a continuous range of values between 0 and 1, commonly representing the probability of some event occurring. Logistic regression is fairly intuitive and very effective - we'll review the details now.
+
+
+## 6.0 Time Series
+
+A time series is a set of observations of a single variable at multiple different points in time. Time series data is different in that these observations <i>are</i> dependent on another variable. For example, the stock price of Microsoft today <i>is</i> related to the stock price yesterday.
 
 
 ## 5.0 Final Words
