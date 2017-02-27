@@ -40,7 +40,8 @@ Download [Python](https://www.python.org/downloads/) and [Pip](https://pip.pypa.
 Let's install the modules we'll need for this tutorial. Open up your terminal and enter the following commands to install the needed python modules: 
 
 ```
-pip3 install 
+pip3 install scikit-learn
+pip3 install scipy
 ```
 
 ### 0.2 R & R Studio
@@ -70,7 +71,7 @@ Values of this variable are different every time it's observed. To denote these,
 
 So when we say `P(H > h)`, where the random variables refer to heights, what we're asking for is the probability that the height is larger than some observed height <i>h</i>.
 
-### 1.2Probability Distribution
+### 1.2 Probability Distribution
 
 The probability distribution describes the distribution of a random variable and is defined by its density function, `f(h)`. Note that the area under the distribution gives us the probability.
 
@@ -85,7 +86,7 @@ In Linear Regression, the dependent variable is continuous, independent variable
 
 If the data actually lies on a line, then two sample points will be enough to get a perfect prediction. But, as in the example below, the input data is seldom perfect, so our “predictor” is almost always off by a bit. In this image, it's clear that only a small fraction of the data points appear to lie on the line itself.
 
-![alt text](linreg "Logo Title Text 1")
+![alt text](https://github.com/lesley2958/regression/blob/master/linreg.png?raw=true "Logo Title Text 1")
 
 It's obvious that we can't assume a perfect prediction based off of data like this, so instead we wish to summarize the trends in the data using a simple description mechanism. In this case, that mechanism is a line. Now the computation required to find the “best” coefficients of the line is quite straightforward once we pick a suitable notion of what “best” means. This is what we mean by best fit line. 
 
@@ -157,6 +158,230 @@ Lastly, regression doesn’t work with categorical variables with multiple value
 
 ### 2.7 Example 1
 
+This example uses the first feature of the diabetes dataset to illustrate a two-dimensional plot of this regression technique. The straight line can be seen in the plot, showing how linear regression attempts to draw a straight line that will best minimize the residual sum of squares between the observed responses in the dataset, and the responses predicted by the linear approximation.
+
+First, we input the needed modules and load the diabetes dataset: 
+
+``` python
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn import datasets, linear_model
+diabetes = datasets.load_diabetes()
+```
+
+Since we're only using one feature, we pick it out: 
+
+``` python
+diabetes_X = diabetes.data[:, np.newaxis, 2]
+```
+
+Next, we split the data into training/testing sets
+
+```
+diabetes_X_train = diabetes_X[:-20]
+diabetes_X_test = diabetes_X[-20:]
+```
+
+We do the same for the outputs: 
+
+``` python
+diabetes_y_train = diabetes.target[:-20]
+diabetes_y_test = diabetes.target[-20:]
+```
+
+Next, we create linear regression object by calling the class:
+
+``` python
+regr = linear_model.LinearRegression()
+```
+
+Now, we're able to train the model using the training sets
+
+``` python
+regr.fit(diabetes_X_train, diabetes_y_train)
+```
+
+Let's take a look at what our coefficients are:
+
+``` python
+print('Coefficients: \n', regr.coef_)
+```
+
+Now, let's take a look at the mean squared error:
+
+``` python
+print("Mean squared error: %.2f"
+      % np.mean((regr.predict(diabetes_X_test) - diabetes_y_test) ** 2))
+```
+
+Now let's see what the variance is: 
+
+``` python
+print('Variance score: %.2f' % regr.score(diabetes_X_test, diabetes_y_test))
+```
+
+And finally, let's plot the outputs of the test date:
+
+``` python
+plt.scatter(diabetes_X_test, diabetes_y_test,  color='black')
+plt.plot(diabetes_X_test, regr.predict(diabetes_X_test), color='blue',
+         linewidth=3)
+```
+
+Let's see what we get! 
+``` python
+plt.xticks(())
+plt.yticks(())
+plt.show()
+```
+
+## 3.0 Non Linear Regression
+
+Non-linear regression analysis uses a curved function, usually a polynomial, to capture the non-linear relationship between the two variables. The regression is often constructed by optimizing the parameters of a higher-order polynomial such that the line best fits a sample of (x, y) observations.
+
+There are cases where non-linear models are <b>intrinsically linear</b>, meaning they can be made linear by simple transformation. But more interestingly, are the ones where it can't.
+
+
+### 3.1 Start Values
+
+Finding good starting values is very important in non-linear regression to allow the model algorithm to converge. If you set starting parameters values completely outside of the range of potential parameter values the algorithm will either fail or it will return non-sensical parameter like for example returning a growth rate of 1000 when the actual value is 1.04.
+
+The best way to find correct starting value is to “eyeball” the data, plotting them and based on the understanding that you have from the equation find approximate starting values for the parameters.
+
+### 3.2 Example 1
+
+In this first example, we'll be using the Michaelis-Menten equation:. 
+
+Here, we simulate some data:
+
+``` R
+set.seed(20160227)
+x<-seq(0,50,1)
+y<-((runif(1,10,20)*x)/(runif(1,0,10)+x))+rnorm(51,0,1)
+```
+
+For simple models, `nls` finds good starting values for the parameters:
+
+``` R
+m<-nls(y~a*x/(b+x))
+```
+
+Now, we get some estimation of goodness of fit:
+
+``` R
+cor(y,predict(m))
+```
+
+And lastly, we plot:
+
+``` R
+plot(x,y)
+lines(x,predict(m),lty=2,col="red",lwd=3)
+```
+
+### 3.3 Example 2 
+
+Working off of the previous example, we simulate some data to go through an example where we <i>estimate</i> the parameter values:
+
+``` R
+y<-runif(1,5,15)*exp(-runif(1,0.01,0.05)*x)+rnorm(51,0,0.5)
+```
+
+So now let's visually estimate some starting parameter values:
+
+``` R
+plot(x,y)
+```
+
+From this graph set, we approximate the starting values. Parameter a is the y value when x is 0 and `b` is the decay rate. 
+
+``` R
+a_start<-8 
+b_start<-2*log(2)/a_start 
+```
+
+Now we're ready for some modeling!
+
+``` R
+m<-nls(y~a*exp(-b*x),start=list(a=a_start,b=b_start))
+```
+
+Now we get some estimation of goodness of fit and plot it: 
+``` R
+cor(y,predict(m))
+lines(x,predict(m),col="red",lty=2,lwd=3)
+```
+
+### 3.2 Example 3
+
+We begin by loading in the needed modules and data: 
+``` python
+import numpy as np
+from scipy.optimize import curve_fit
+xdata = np.array([-2,-1.64,-1.33,-0.7,0,0.45,1.2,1.64,2.32,2.9])
+ydata = np.array([0.699369,0.700462,0.695354,1.03905,1.97389,2.41143,1.91091,0.919576,-0.730975,-1.42001])
+```
+
+Before we start, let's get a look at the scatterplot: 
+
+``` python
+plt.plot(xdata,ydata,"*")
+plt.xlabel("xdata")
+plt.ylabel("ydata")
+plt.show()
+```
+
+Here, I define the fit function:
+``` python
+def func(x, p1,p2):
+  return(p1*np.cos(p2*x) + p2*np.sin(p1*x))
+```
+
+This is where we calculate and show fit parameters: 
+
+``` python
+popt, pcov = curve_fit(func, xdata, ydata,p0=(1.0,0.2))
+```
+
+Next, we calculate and show sum of squares of residuals since it’s not given by the curve_fit function
+
+``` python
+p1 = popt[0]
+p2 = popt[1]
+residuals = ydata - func(xdata,p1,p2)
+fres = sum(residuals**2)
+```
+
+And finally, let's plot the curve line along with our data:
+
+``` python
+curvex=np.linspace(-2,3,100)
+curvey=func(curvex,p1,p2)
+plt.plot(xdata,ydata,’*’)
+plt.plot(curvex,curvey,’r’)
+plt.xlabel(’xdata’)
+plt.ylabel(’ydata’)
+plt.show()
+```
+
+## 4.0 Multiple Linear Regression
+
+Multiple linear regression is similar to simple linear regression, the only difference being the use of more than one input variable. This means we get a basic equation that's slightly different from linear regression.
+
+
+### 4.1 Basic Equation
+
+In multiple linear regression, there is more than one explanatory variable. The basic equation we've seen before becomes:
+
+Y<sub>i</sub> = m<sub>0</sub> + m<sub>1X<sub>1i</sub> + m<sub>2</sub>X<sub>2i</sub> + &isin;<sub>i</sub>
+
+where &isin;<sub>i</sub> are independent random variables with a mean of 0. 
+
+### 4.2 Assummptions
+
+The assumptions are the same as for simple regression.
+
+### 4.3 Example 1
 
 ``` python
 from sklearn.linear_model import LinearRegression
@@ -181,24 +406,6 @@ And finally, we predict the corresponding value of Y for X = [8,4]
 ``` python
 print(genius_regression_model.predict([8,4]))
 ```
-
-## 3.0 Non Linear Regression
-
-Non-linear regression analysis uses a curved function, usually a polynomial, to capture the non-linear relationship between the two variables. The regression is often constructed by optimizing the parameters of a higher-order polynomial such that the line best fits a sample of (x, y) observations.
-
-## 4.0 Multiple Linear Regression
-
-Multiple linear regression is similar to simple linear regression, the only difference being the use of more than one input variable. This means we get a basic equation that's slightly different from linear regression.
-
-### 4.1 Basic Equation
-
-In multiple linear regression, there is more than one explanatory variable. The basic equation we've seen before becomes:
-
-Y<sub>i</sub> = m<sub>0</sub> + m<sub>1X<sub>1i</sub> + m<sub>2</sub>X<sub>2i</sub> + &isin;<sub>i</sub>
-
-where &isin;<sub>i</sub> are independent random variables with a mean of 0. 
-
-The assumptions are the same as for simple regression.
 
 
 ## 5.0 Logistic Regression
@@ -287,7 +494,7 @@ A regression equation is a polynomial regression equation if the power of indepe
 
 While a polynomial regression might seem like the best option to produce a low error, it's important to be aware of the possibility of overfitting your data. Always plot the relationships to see the fit and focus on making sure that the curve fits the nature of the problem. 
 
-![alt text](undover "Logo Title Text 1")
+![alt text](https://github.com/lesley2958/regression/blob/master/und-over.png?raw=true "Logo Title Text 1")
 
 ## 8.0 Stepwise Regression
 
@@ -315,7 +522,7 @@ Recall this equation from earlier!
 
 Ridge regression solves the multicollinearity problem through shrinkage parameter &lambda;, shown below:
 
-![alt text](ridge "Logo Title Text 1")
+![alt text](https://github.com/lesley2958/regression/blob/master/ridge.png?raw=true "Logo Title Text 1")
 
 In this equation, we have two components. First, is the least square term and other is lambda of the summation of β2 (beta- square) where β is the coefficient. This is added to least square term in order to shrink the parameter to have a very low variance.
 
