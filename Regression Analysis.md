@@ -24,7 +24,7 @@ Brought to you by [Lesley Cordero](http://www.columbia.edu/~lc2958), [Byte Acade
 	+ [2.4 Correlation Coefficient](#correlation-coefficient)
 	+ [2.5 Disadvantages](#25-disadvantages)
 - [3.0 Multiple Linear Regression](#30-multiple-linear-regression)
-- [4.0 Logistic Regression](#40-logistic-regression)
+- [5.0 Logistic Regression](#50-logistic-regression)
 - [5.0 Final Words](#50-final-words)
 	+ [5.1 Resources](#51-resources)
 
@@ -450,11 +450,11 @@ plt.show()
 ```
 
 Now you can see that the two classes are completely separate! That means we can [easily] find a function that separates the two classes. 
-![alt text](log-scat "Logo Title Text 1")
+![alt text](https://github.com/lesley2958/regression/blob/master/log-scatter.png?raw=true "Logo Title Text 1")
 
 We want to return a value between 0 and 1 to represent a probability. To do this we make use of the logistic function. The logistic function mathematically looks like this:
 
-![alt text](logistic function "Logo Title Text 1")
+![alt text](https://github.com/lesley2958/regression/blob/master/logistic%20function.png?raw=true "Logo Title Text 1")
 
 Let's take a look at this plot:
 
@@ -479,7 +479,7 @@ where SW is our sepal width and SL is our sepal length. But how do we get our &b
 
 We want to choose β values to maximize the probability of correctly classifying our plants. If we assume our data are independent and identically distributed (iid), we can take the product of all our individually calculated probabilities and that is the value we want to maximize. We get the following formula:
 
-![alt text](cost-logistic "Logo Title Text 1")
+![alt text](https://github.com/lesley2958/regression/blob/master/cost-logistic.png?raw=true "Logo Title Text 1")
 
 This simplifies to: &prod;<sub>setosa</sub> h(x) &prod;<sub>versicolor</sub> 1 - h(x). So now we know what to maximize. We can also switch it to - &prod;<sub>setosa</sub> h(x) &prod;<sub>versicolor</sub> 1 - h(x) and minimize this since minimizing the negative is the same as maximizing the positive. 
 
@@ -512,33 +512,33 @@ The idea behind gradient descent is to pick a point on the curve and follow it d
 
 Now if we define y<sub>i</sub> to be 1 for sentose and 0 for when it's versicolor, then we can simplify to h(x) and 1 - h(x). Recall [log rules](http://www.mathwords.com/l/logarithm_rules.htm). If we take the log of our cost function, our product becomes a sum:
 
-![alt text](cost-logistic "Logo Title Text 1")
+![alt text](https://github.com/lesley2958/regression/blob/master/cost%20funct%202.png?raw=true "Logo Title Text 1")
 
 The next step is to take the derivative with respect to &beta;<sub>0</sub>. Remembering that the derivate of log(x) is 1/x, we get:
 
-![alt text](deriv "Logo Title Text 1")
+![alt text](https://github.com/lesley2958/regression/blob/master/deriv.png?raw=true "Logo Title Text 1")
 
 We have to take the derivative of h(x), which we can do with the quotient rule to see that it's: 
 
-![alt text](deriv1 "Logo Title Text 1")
+![alt text](https://github.com/lesley2958/regression/blob/master/deriv1.png?raw=true "Logo Title Text 1")
 
 Since the derivative of x with respect to &beta;<sub>0</sub> is just 1, we can put all of this together to get: 
 
-![alt text](deriv2 "Logo Title Text 1")
+![alt text](https://github.com/lesley2958/regression/blob/master/deriv2.png?raw=true "Logo Title Text 1")
 
 Now we can simplify this to y<sub>i</sub>(1-h(x<sub>i</sub>))-(1-y<sub>i</sub>)h(x<sub>i</sub>) = y<sub>i</sub>-y<sub>i</sub>h(x<sub>i</sub>)-h(x<sub>i</sub>)+y<sub>i</sub>h(x<sub>i</sub>) = y<sub>i</sub> - h(x<sub>i</sub>).
 
 So finally we get: 
 
-![alt text](final-gradient "Logo Title Text 1")
+![alt text](https://github.com/lesley2958/regression/blob/master/final-gradient.png?raw=true "Logo Title Text 1")
 
 For &beta;<sub>1</sub>, we get:
 
-![alt text](final-gradient "Logo Title Text 1")
+![alt text](https://github.com/lesley2958/regression/blob/master/beta1.png?raw=true "Logo Title Text 1")
 
 For &beta;<sub>2</sub>, we get: 
 
-![alt text](final-gradient "Logo Title Text 1")
+![alt text](https://github.com/lesley2958/regression/blob/master/beta2.png?raw=true "Logo Title Text 1")
 
 In Python, we can write:
 
@@ -683,6 +683,141 @@ In an autoregressive model, the response variable is regressed against previous 
 ### 6.3 Moving Average Model
 
 A moving average model is similar to an autoregressive model except that instead of being based on the previous observed values, the model describes a relationship between an observation and the previous error terms.
+
+### 6.4 Analysis
+
+The New York Independent System Operator (NYISO) operates competitive wholesale markets to manage the flow of electricity across New York. We will be using this data, along with weather forecasts, to create a model that predicts electricity prices.
+
+We begin by importing the needed modules and load the data:
+
+``` python
+import pandas as pd
+import numpy as np
+from pandas.tools.plotting import autocorrelation_plot
+from matplotlib import pyplot as plt
+from statsmodels.tsa.arima_model import ARIMA
+from statsmodels.tsa.stattools import adfuller
+import statsmodels.api as sm
+
+plt.rcParams['figure.figsize'] = (10, 6)
+day_ahead_market = pd.read_csv('./day_ahead_market_lbmp.csv')
+real_time_market = pd.read_csv('./real_time_market_lbmp.csv')
+weather_forecast = pd.read_csv('./weather_forecast.csv')
+```
+
+We want to have the times in actual time objects, but right now they're strings, so we have to convert string date column to a datetime type:
+``` python
+day_ahead_market['Time Stamp'] = pd.to_datetime(day_ahead_market['Time Stamp'], format='%m/%d/%Y %H:%M')
+real_time_market['Time Stamp'] = pd.to_datetime(real_time_market['Time Stamp'], format='%m/%d/%Y %H:%M:%S')
+```
+
+Now we have to do the same for the weather data:
+
+``` python
+weather_forecast['Forecast Date'] = pd.to_datetime(weather_forecast['Forecast Date'], format='%m/%d/%Y')
+weather_forecast['Vintage Date'] = pd.to_datetime(weather_forecast['Vintage Date'], format='%m/%d/%Y')
+weather_forecast['Vintage'] = weather_forecast['Vintage'].astype('category')
+```
+
+Now we're going to re-index the data by name of region and timestamp. This helps us manipulate and access the data. 
+
+``` python
+dam_time_name = day_ahead_market.set_index(['Name', 'Time Stamp'])
+rtm_time_name = real_time_market.set_index(['Name', 'Time Stamp'])
+```
+
+We're only looking at the data for NYC, so we then select just the data for that:
+
+``` python
+dam_nyc_lbmp = dam_time_name['LBMP ($/MWHr)']['N.Y.C.']
+rtm_nyc_lbmp = rtm_time_name['LBMP ($/MWHr)']['N.Y.C.']
+```
+
+So then we plot this to see the emerging relationships on the data that's a day ahead:
+
+``` python
+plt.figure(figsize=(10,8))
+dam_nyc_lbmp.plot(title='NYC Day Ahead LBMP 2015')
+plt.show()
+```
+
+And next for the data in real time:
+
+``` python
+plt.figure(figsize=(10,8))
+rtm_nyc_lbmp.plot(title='NYC Realtime LBMP 2015')
+plt.show()
+```
+
+The timestamps on the realtime data and day ahead data don't actually line up. The realtime data has observations every 5 minutes while the day ahead data has observations every hour. So we need to fix this by aligning the two series of data.
+
+``` python
+aligned_dam, aligned_rtm = rtm_nyc_lbmp.align(dam_nyc_lbmp, join='inner')
+```
+
+Next, we remote duplicates:
+
+``` python
+no_dup_al_dam = aligned_dam[~aligned_dam.index.duplicated(keep='first')]
+no_dup_al_rtm = aligned_rtm[~aligned_dam.index.duplicated(keep='first')]
+
+no_dup_al_dam.name = 'dam_lbmp'
+no_dup_al_rtm.name = 'rtm_lbmp'
+```
+
+Next step is to insert this data into a dataframe. The dataframe is too wide, however, so we transpose it:
+
+``` python
+dam_rtm_df = pd.DataFrame([no_dup_al_dam, no_dup_al_rtm]).transpose()
+```
+
+Now that we have our pricing data for the NYC region, we need to get the weather data ready. The weather data comes from a different data source, and unfortunately it's not split into the same exact regions as the pricing data. To remedy this, we'll pick two weather stations nearby - the ones located at JFK airport and LGA airport - and average the temperatures together.
+
+This gets all the temperature data from LGA and JFK stations: 
+``` python
+lga_and_jfk_indexed = weather_forecast[(weather_forecast['Station ID'] == 'LGA')] |
+	(weather_forecast['Station ID'] == 'JFK')].set_index(['Forecast Date', 'Vintage Data', 'Vintage age', 'Station ID'])
+```
+
+We still have to prep our data a bit more. So first we unindex, which will flatten our dataframe. Next, we pick out the rows with the Vintage being 'Actual' because we've got a few different kinds of dates floating around and it's important to stay consistent. Our end goal is to have our data like:
+
+```
+Time stamp: today
+Temperature: the actual temperature today (x)
+Day ahead price: today's price for electricity tomorrow (x)
+Realtime price: tomorrrow's electricity price observed tomorrow (y)
+```
+
+To accomplish this, we write:
+
+``` python
+mean_nyc = mean_nyc_indexed.reset_index()
+actual_temp_df = mean_nyc[mean_nyc['Vintage'] == 'Actual'] \
+    .groupby(['Vintage Date']).first() \
+    .rename(columns=lambda x: 'Actual ' + x) # prepend the word Actual to column names
+dam_rtm_act_df = dam_rtm_df.join(actual_temp_df, how='left').fillna(method='ffill').dropna()
+```
+
+Next, observe that there is a different day ahead price every single hour, but only a single temperature estimate per day. We'll do something similar to the frequency mismatch we saw with day ahead/realtime data - resample at the lower frequency and average the data in those lower frequency buckets.
+
+``` python
+daily_df = dam_rtm_act_df.resample('D', how='mean')
+```
+
+The next question is whether to use the max temp or min temp. Let's take a look at the data to see if one or the other makes a difference: 
+
+``` python
+plt.figure(figsize=(14,10))
+plt.plot_date(daily_df.index, daily_df['rtm_lbmp'], '-', label='RTM LBMP')
+plt.plot_date(daily_df.index, daily_df['dam_lbmp'], '-', label='DAM LBMP')
+plt.plot_date(daily_df.index, daily_df['Actual Min Temp'], '-', label='Min Temp')
+plt.plot_date(daily_df.index, daily_df['Actual Max Temp'], '-', label='Max Temp')
+plt.legend()
+plt.show()
+```
+
+Min and max temperature seem to be so highly correlated with each other that it most likely won't matter one way or another which we used.
+
 
 ## 7.0 Polynomial Regression
 
