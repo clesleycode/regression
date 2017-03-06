@@ -6,13 +6,15 @@ Brought to you by [Lesley Cordero](http://www.columbia.edu/~lc2958), [Byte Acade
 ## Table of Contents
 
 - [0.0 Setup](#00-setup)
-	+ [0.1 R and R Studio](#01-r-and-r-studio)
+	+ [0.1 Python & Pip](#01-python--pip)
+	+ [0.2 R & R Studio](#02-r--r-studio)
 	+ [0.2 Packages](#02-packages)
 	+ [0.3 Virtual Environment](#03-virtual-environment)	
 - [1.0 Introduction](#10-introduction)
 	+ [1.1 Random Variables](#11-random-variables)
 	+ [1.2 Probability Distribution](#12-probability-distribution)
 	+ [1.3 Correlation Coefficient](#13-correlation-coefficient)
+	+ [1.4 Maximum Likelihood](#14-maximum-likelihood)
 - [2.0 Linear Regression](#20-linear-regression)
 	+ [2.1 Basic Equation](#21-basic-equation)
 	+ [2.2 Error Term](#22-error-term)
@@ -22,11 +24,36 @@ Brought to you by [Lesley Cordero](http://www.columbia.edu/~lc2958), [Byte Acade
 		* [2.3.3 Homoscedasticity](#233-homoscedasticity)
 		* [2.3.4 Error Distribution](#234-error-distribution)
 	+ [2.4 Correlation Coefficient](#correlation-coefficient)
-	+ [2.5 Disadvantages](#25-disadvantages)
-- [3.0 Multiple Linear Regression](#30-multiple-linear-regression)
+	+ [2.5 Variance](#25-variance)
+	+ [2.6 Disadvantages](#26-disadvantages)
+	+ [2.7 Example 1](#27-example-1)
+- [3.0 Non Linear Regression](#30-non-linear-regression)
+	+ [3.1 Start Values](#31-start-values)
+	+ [3.2 Example 1](#32-example-1)
+	+ [3.3 Example 2](#33-example-2)
+	+ [3.4 Example 3](#34-example-3)
+- [4.0 Multiple Linear Regression](#40-multiple-linear-regression)
+	+ [4.1 Basic Equation](#41-basic-equation)
+	+ [4.2 Assumptions](#42-assumptions)
+	+ [4.3 Example 1](#43-example-1)
 - [5.0 Logistic Regression](#50-logistic-regression)
-- [5.0 Final Words](#50-final-words)
-	+ [5.1 Resources](#51-resources)
+	+ [5.1 Example 1](#51-example-1)
+	+ [5.2 Cost Function](#52-cost-function)
+	+ [5.3 Gradients](#53-gradients)
+	+ [5.4 Gradient Descent](#54-gradient-descent)
+	+ [5.5 Prediction](#55-prediction)
+	+ [5.6 Example 2](#56-example-2)
+- [6.0 Time Series](#60-time-series)
+	+ [6.1 Stationarity](#61-stationarity)
+	+ [6.2 Autoregressive Model](#62-autoregressive-model)
+	+ [6.3 Moving Average Model](#63-moving-average-model)
+	+ [6.4 Analysis](#64-analysis)
+		* [6.4.1 Model Estimation](#641-model-estimation)
+		* [6.4.2 Analysis](#642-analysis)
+- [7.0 Stepwise Regression](#70-stepwise-regression)
+- [8.0 Ridge Regression](#80-ridge-regression)
+- [9.0 Final Words](#90-final-words)
+	+ [9.1 Resources](#91-resources)
 
 
 ## 0.0 Setup
@@ -78,6 +105,12 @@ The probability distribution describes the distribution of a random variable and
 ### 1.3 Correlation Coefficient
 
 The correlation coefficient, <b>r</b> indicates the nature and strength of the relationship between x and y. Values of r range from -1 to +1. A correlation coefficient of 0 indicates there is no relationship.
+
+
+### 1.4 Maximum Likelihood 
+
+Maximum Likelihood is a technique where we maximize the likehood that we would have gotten our data for some given parameters P(Y|&beta;). If we can assume normality, it leads to the same results as least squares. 
+This apporach is considered a <i>frequentist</i> approach instead.
 
 
 ## 2.0 Linear Regression
@@ -241,6 +274,10 @@ Non-linear regression analysis uses a curved function, usually a polynomial, to 
 
 There are cases where non-linear models are <b>intrinsically linear</b>, meaning they can be made linear by simple transformation. But more interestingly, are the ones where it can't.
 
+While a polynomial regression might seem like the best option to produce a low error, it's important to be aware of the possibility of overfitting your data. Always plot the relationships to see the fit and focus on making sure that the curve fits the nature of the problem. 
+
+![alt text](https://github.com/lesley2958/regression/blob/master/und-over.png?raw=true "Logo Title Text 1")
+
 
 ### 3.1 Start Values
 
@@ -312,7 +349,7 @@ cor(y,predict(m))
 lines(x,predict(m),col="red",lty=2,lwd=3)
 ```
 
-### 3.2 Example 3
+### 3.4 Example 3
 
 We begin by loading in the needed modules and data: 
 ``` python
@@ -639,7 +676,7 @@ sum(y_flip == logreg.predict(X))
 It also gets 99, a great sign!
 
 
-### 5.5 Example 2
+### 5.6 Example 2
 
 In the case of logistic regression, the default multiclass strategy is the one versus rest. This example shows how to use both the strategies with the handwritten digit dataset, containing a class for numbers from 0 to 9. The following code loads the data and places it into variables.
 
@@ -678,11 +715,11 @@ If we take the trends out of data, we can make it stationary, which then allows 
 
 ### 6.2 Autoregressive Model
 
-In an autoregressive model, the response variable is regressed against previous values from the same time series. 
+In an autoregressive model, the response variable is regressed against previous values from the same time series. We say that a process if AR(1) if only the previous observed value is used. A process that uses the previous p values is called AR(p). A classic example of an AR(1) process is a random walk. In a random walk, a "walker" has an equal chance of stepping left or stepping right.
 
 ### 6.3 Moving Average Model
 
-A moving average model is similar to an autoregressive model except that instead of being based on the previous observed values, the model describes a relationship between an observation and the previous error terms.
+A moving average model is similar to an autoregressive model except that instead of being based on the previous observed values, the model describes a relationship between an observation and the previous error terms. We say that a process is MA(1) if only the previous observed value is used. A process that uses the previous p values is called MA(p).
 
 ### 6.4 Analysis
 
@@ -819,15 +856,118 @@ plt.show()
 Min and max temperature seem to be so highly correlated with each other that it most likely won't matter one way or another which we used.
 
 
-## 7.0 Polynomial Regression
+#### 6.4.1 Model Estimation
 
-A regression equation is a polynomial regression equation if the power of independent variable is more than 1. Instead of the usual straight line, it's a curve that fits into the data points. 
+Now that our data is in the format we want, we can complete a regression called ARIMA. It's a combination of 3 types of models - AutoRegressive (a combination of the previous values), Integrated (differencing the data), Moving Average (smoothing the data). It's typically represented as:
 
-While a polynomial regression might seem like the best option to produce a low error, it's important to be aware of the possibility of overfitting your data. Always plot the relationships to see the fit and focus on making sure that the curve fits the nature of the problem. 
+```
+arima(# of AR terms, # of differences, # of smoothing terms) = arima(p, d, q)
+```
 
-![alt text](https://github.com/lesley2958/regression/blob/master/und-over.png?raw=true "Logo Title Text 1")
+So how can we go about picking our parameters? A common approach is to use the Box-Jenkins Method for parameter selection. First, you pick parameter d. You can do this using a Dickey-Fuller test. Then, you can use autocorrelation function (ACF) and partial autocorrelation function (PACF) to identify the AR parameter (p) and the MA parameter (q).
 
-## 8.0 Stepwise Regression
+For our example, we'll just pick ARIMA(0,0,1) for its simplicity (this is therefore just an MA(1) process).
+
+Before fitting the model, we'll split our data into the training and test data:
+
+``` python
+exog_data = np.array([daily_df['Actual Max Temp'].values, daily_df['dam_lbmp'].values])
+```
+
+Now we can fit the model on a portion of the data
+``` python
+k = 250
+m = ARIMA(daily_df['rtm_lbmp'].values[0:k], [0,0,1], exog=np.transpose(exog_data[:,0:k]), dates=daily_df.index.values[0:k])
+results = m.fit(trend='nc', disp=True)
+```
+
+Let's look at the predicted prices:
+
+``` python
+predicted_prices = results.predict(10, 364, exog=np.transpose(exog_data), dynamic=True)
+```
+
+Now let's look at it graphically:
+``` python
+plt.figure(figsize=(14, 10))
+plt.plot(predicted_prices, label='prediction')
+plt.plot(daily_df['rtm_lbmp'].values, label='actual RTM')
+plt.legend()
+plt.show()
+```
+
+#### 6.4.2 Analysis
+
+Our model seems to work well from the graph of the forecast. Looking at the coefficients from the ARIMA model, we can see that increasing temperatures and increasing day ahead prices are both associated with higher realtime prices the next day. Just by looking at the coefficients, you can see that our forecast is extremely similar to the day ahead values, with a small adjustment based on temperature and another adjustment based on the moving average term.
+
+``` python
+plt.figure(figsize=(14, 10))
+plt.plot(predicted_prices, label='prediction')
+plt.plot(daily_df['rtm_lbmp'].values, label='actual RTM')
+plt.plot(daily_df['dam_lbmp'].values, label='actual DAM')
+plt.legend()
+plt.show()
+```
+Our data and model helps us predict the realtime electricity cost the day before. If you ran a company with significant power demands, you might be able to use such a model to decide whether or not to buy electricity in advance or on demand. Let's see how it would work:
+
+``` python
+len(predicted_prices)
+len(daily_df['rtm_lbmp'].values[10:])
+
+print("--- Trading Log ---")
+
+i = 251
+PnL = np.zeros(100)
+
+
+while i < 351:
+    if (predicted_prices[i] < daily_df['dam_lbmp'].values[i]) and (daily_df['rtm_lbmp'].values[i+1] < daily_df['dam_lbmp'].values[i]):
+        
+        # if our model says the DAM is overpriced, then don't pre-buy and buy at the realtime price
+        
+        print("Buy RTM, +", daily_df['dam_lbmp'].values[i] - daily_df['rtm_lbmp'].values[i+1])
+        PnL[i-251] = daily_df['dam_lbmp'].values[i] - daily_df['rtm_lbmp'].values[i+1]
+        
+    elif (predicted_prices[i] > daily_df['dam_lbmp'].values[i]) and (daily_df['rtm_lbmp'].values[i+1] > daily_df['dam_lbmp'].values[i]):
+        
+        # if our model says the DAM is underpriced, pre-buy the electricity so you don't have to pay realtime price 
+        
+        print("Buy DAM, +", daily_df['rtm_lbmp'].values[i+1] - daily_df['dam_lbmp'].values[i] )
+        PnL[i-251] = daily_df['rtm_lbmp'].values[i+1] - daily_df['dam_lbmp'].values[i]
+        
+    else:
+        
+        # if we were wrong, we lose money :(
+        
+        print("Lose $$, -", max(daily_df['rtm_lbmp'].values[i+1] - daily_df['dam_lbmp'].values[i],daily_df['dam_lbmp'].values[i] - daily_df['rtm_lbmp'].values[i+1]))
+        PnL[i-251] = min(daily_df['rtm_lbmp'].values[i+1] - daily_df['dam_lbmp'].values[i],daily_df['dam_lbmp'].values[i] - daily_df['rtm_lbmp'].values[i+1])
+    i = i+1
+```
+
+Now let's take a look at the visualization:
+
+``` python
+cumPnL = np.cumsum(PnL)
+plt.figure(figsize=(10, 8))
+plt.plot(cumPnL, label='PnL')
+plt.legend()
+plt.show()
+```
+
+Looks like the model works because it predicts every so slightly closer to the true RTM than the DAM!
+
+``` python
+dam_adj = daily_df['rtm_lbmp'].values[10:]-daily_df['dam_lbmp'].values[:-10]
+mod_adj = daily_df['rtm_lbmp'].values[10:]-predicted_prices[:-1]
+plt.figure(figsize=(10, 8))
+plt.plot(dam_adj, label='DAM error')
+plt.plot(mod_adj, label='Model error')
+plt.legend()
+plt.show()
+```
+
+
+## 7.0 Stepwise Regression
 
 This form of regression is used when we deal with multiple independent variables. In this technique, the selection of independent variables is done with the help of an automatic process, which involves no human intervention.
 
@@ -839,7 +979,7 @@ We do this by observing statistical values like R-square, t-stats, and AIC metri
 
 The aim of this modeling technique is to maximize the prediction power with minimum number of predictor variables. It is one of the method to handle higher dimensionality of data set.
 
-## 7.0 Ridge Regression
+## 8.0 Ridge Regression
 
 Ridge Regression is a technique used when the data suffers from multicollinearity (independent variables are highly correlated). In multicollinearity, even though the least squares estimates are unbiased, their variances are large which deviates the observed value far from the true value. By adding a degree of bias to the regression estimates, ridge regression reduces the standard errors.
 
@@ -857,12 +997,14 @@ Ridge regression solves the multicollinearity problem through shrinkage paramete
 
 In this equation, we have two components. First, is the least square term and other is lambda of the summation of β2 (beta- square) where β is the coefficient. This is added to least square term in order to shrink the parameter to have a very low variance.
 
+### 8.1 Assumptions
+
 The assumptions of this regression is same as least squared regression, except normality is not to be assumed.
 
-## 5.0 Final Words
+## 9.0 Final Words
 
 
-### 5.1 Resources
+### 9.1 Resources
 
 []() <br>
 []()
