@@ -951,7 +951,7 @@ while i < 351:
     i = i+1
 ```
 
-Now let's take a look at the visualization:
+Now lets take a look at the visualization:
 
 ``` python
 cumPnL = np.cumsum(PnL)
