@@ -977,13 +977,44 @@ plt.show()
 
 This form of regression is used when we deal with multiple independent variables. In this technique, the selection of independent variables is done with the help of an automatic process, which involves no human intervention.
 
+Stepwise Regression is sensitive to initial inputs, which can be mitigated by repeatedly running the algorithm on bootstrap samples.
+
+### 7.1 Bootstrap
+
+R has a package called `bootStepAIC()` that implements a Bootstrap procedure to investigate the variability of model selection with the function `stepAIC()`.
+
+Using the `stepAIC()` function, you can input an already fitted lm/glm model and the associated dataset. We’ll use the BostonHousing dataset from the mlbench package to showcase this:
+
+``` R
+library(bootStepAIC)
+library(plotly)
+library(mlbench)
+ 
+# Load Boston housing dataset
+data("BostonHousing")
+ 
+# Fit Linear regression model
+fit <- lm(crim ~ ., data = BostonHousing)
+ 
+# Run bootstrapped stepwise regression
+fit.boot <- boot.stepAIC(fit, data = BostonHousing, B = 100)
+```
+
+This gives us the following information:
+
+- No of times a covariate was featured in the final model from `stepAIC()`
+- No of times a covariate’s coefficient sign was positive / negative
+- No of times a covariate was statistically significant (default at alpha = 5%)
+
+
+
 We do this by observing statistical values like R-square, t-stats, and AIC metric to discern significant variables. Stepwise regression basically fits the regression model by adding/dropping co-variates one at a time based on a specified criterion. Some of the most commonly used Stepwise regression methods are:
 
 - Standard stepwise regression does two things: it adds and removes predictors as needed for each step.
 - Forward selection starts with most significant predictor in the model and adds variable for each step.
 - Backward elimination starts with all predictors in the model and removes the least significant variable for each step.
 
-The aim of this modeling technique is to maximize the prediction power with minimum number of predictor variables. It is one of the method to handle higher dimensionality of data set.
+The aim of this modeling technique is to maximize the prediction power with minimum number of predictor variables. It is one of the methods to handle higher dimensionality of data set.
 
 ## 8.0 Ridge and Lasso Regression
 
@@ -1234,7 +1265,7 @@ svc.fit(iris_X_train, iris_y_train)
 
 Classes aren't always easily separable. In these cases, we build a decision function that's polynomial instead of linear. This is done using the <b>kernel trick</b>.
 
-![alt text](svm "Logo Title Text 1")
+![alt text](https://github.com/lesley2958/regression/blob/master/svm.png?raw=true "Logo Title Text 1")
 
 Each of these can be specified with the following:
 
