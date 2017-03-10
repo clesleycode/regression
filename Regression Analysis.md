@@ -386,8 +386,8 @@ fres = sum(residuals**2)
 And finally, let's plot the curve line along with our data:
 
 ``` python
-curvex=np.linspace(-2,3,100)
-curvey=func(curvex,p1,p2)
+curvex = np.linspace(-2,3,100)
+curvey = func(curvex,p1,p2)
 plt.plot(xdata,ydata,"*")
 plt.plot(curvex,curvey,"r")
 plt.xlabel("xdata")
@@ -404,15 +404,25 @@ Multiple linear regression is similar to simple linear regression, the only diff
 
 In multiple linear regression, there is more than one explanatory variable. The basic equation we've seen before becomes:
 
-Y<sub>i</sub> = m<sub>0</sub> + m<sub>1X<sub>1i</sub> + m<sub>2</sub>X<sub>2i</sub> + &isin;<sub>i</sub>
+Y<sub>i</sub> = m<sub>0</sub> + m<sub>1X</sub>1i</sub> + m<sub>2</sub>X<sub>2i</sub> + &isin;<sub>i</sub>
 
 where &isin;<sub>i</sub> are independent random variables with a mean of 0. 
 
-### 4.2 Assummptions
+### 4.2 Assumptions
 
 The assumptions are the same as for simple regression.
 
-### 4.3 Example 1
+### 4.3 Mutlicollinearity
+
+Recall, multicollinearity occurs when two or more variables are related. The best way of dealing with multicollinearity is to understand the cause and remove it. If one of the variables appears to be redundant, removing it can reduce multicollinearity. To make this decision, examine the correlations between variables.
+ 
+Other strategies include:
+
+- Figuring out if there is a way to combine the variables.
+- Increasing the sample size of your study. 
+- Centering the variables by computing the mean of each independent variable and then replacing each value with the difference between it and the mean. 
+
+### 4.4 Example 1
 
 ``` python
 from sklearn.linear_model import LinearRegression
@@ -438,15 +448,6 @@ And finally, we predict the corresponding value of Y for X = [8,4]
 print(genius_regression_model.predict([8,4]))
 ```
 
-### 4.4 Mutlicollinearity
-
-Recall, multicollinearity occurs when two or more variables are related. The best way of dealing with multicollinearity is to understand the cause and remove it. If one of the variables appears to be redundant, removing it can reduce multicollinearity. To make this decision, examine the correlations between variables.
- 
-Other strategies include:
-
-- Figuring out if there is a way to combine the variables. T
-- Increasing the sample size of your study. 
-- Centering the variables by computing the mean of each independent variable and then replacing each value with the difference between it and the mean. 
 
 ## 5.0 Logistic Regression
 
