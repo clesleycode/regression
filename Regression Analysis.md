@@ -11,8 +11,7 @@ Brought to you by [Lesley Cordero](http://www.columbia.edu/~lc2958), [Byte Acade
 	+ [0.2 Packages](#02-packages)
 	+ [0.3 Virtual Environment](#03-virtual-environment)	
 - [1.0 Introduction](#10-introduction)
-	+ [1.1 Correlation Coefficient](#11-correlation-coefficient)
-	+ [1.3 Maximum Likelihood](#13-maximum-likelihood)
+	+ [1.1 Maximum Likelihood](#11-maximum-likelihood)
 - [2.0 Linear Regression](#20-linear-regression)
 	+ [2.1 Basic Equation](#21-basic-equation)
 	+ [2.2 Error Term](#22-error-term)
@@ -92,18 +91,14 @@ install.packages("")
 
 Regression Analysis is a predictive modeling technique for figuring out the relationship between a dependent and independent variable. This is used for forecasting, time series modeling, among others. 
 
-### 1.1 Correlation Coefficient
 
-The correlation coefficient, <b>r</b> indicates the nature and strength of the relationship between x and y. Values of r range from -1 to +1. A correlation coefficient of 0 indicates there is no relationship.
+### 1.1 Maximum Likelihood 
 
-### 1.2 Overfitting
 
-In regression, falling into the trap of overfitting can cause the regression coefficients, p-values, and R-squared to be misleading. Cross-validation can detect overfit models by determining how well your model generalizes to other data sets by partitioning your data.
+#### 1.1.1 Likelihood Function 
 
-### 1.3 Maximum Likelihood 
 
-Maximum Likelihood is a technique where we maximize the likehood that we would have gotten our data for some given parameters P(Y|&beta;). If we can assume normality, it leads to the same results as least squares. 
-This apporach is considered a <i>frequentist</i> approach instead.
+#### 1.1.2 Maximum Likelihood Estimator
 
 
 ## 2.0 Linear Regression
