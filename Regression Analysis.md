@@ -119,6 +119,7 @@ The variable that we want to predict, `x`, is called the independent variable. W
 ``` 
 y = a + bx + e
 ```
+
 Here, `a` is the y-intercept, `b` is the slope of the line, and `e` is the error term. Usually we don't know the error term, so we reduce this equation to:
 
 ```
@@ -210,7 +211,7 @@ diabetes_y_train = diabetes.target[:-20]
 diabetes_y_test = diabetes.target[-20:]
 ```
 
-Next, we create linear regression object by calling the class:
+Next, we create the linear regression object by calling the class:
 
 ``` python
 regr = linear_model.LinearRegression()
@@ -250,6 +251,7 @@ plt.plot(diabetes_X_test, regr.predict(diabetes_X_test), color='blue',
 ```
 
 Let's see what we get! 
+
 ``` python
 plt.xticks(())
 plt.yticks(())
