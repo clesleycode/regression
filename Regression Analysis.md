@@ -275,33 +275,33 @@ The best way to find correct starting value is to “eyeball” the data, plotti
 
 ### 3.2 Example 1
 
-In this first example, we'll be using the Michaelis-Menten equation:. 
+In this first example, we'll be using the [Michaelis-Menten equation](https://en.wikipedia.org/wiki/Michaelis%E2%80%93Menten_kinetics) to simulate some data for this exercise. Since we know we're simulating data relating to this equation, we know that the final product should look similar to:
 
-Here, we simulate some data:
+![](https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Michaelis_Menten_curve_2.svg/1200px-Michaelis_Menten_curve_2.svg.png)
 
 ``` R
 set.seed(20160227)
-x<-seq(0,50,1)
-y<-((runif(1,10,20)*x)/(runif(1,0,10)+x))+rnorm(51,0,1)
+x <- seq(0, 50, 1)
+y <- ((runif(1,10,20)*x)/(runif(1,0,10)+x))+rnorm(51,0,1)
 ```
 
-For simple models, `nls` finds good starting values for the parameters:
+For simple non-linear models, `nls` finds good starting values for the parameters:
 
 ``` R
-m<-nls(y~a*x/(b+x))
+m <- nls(y~a*x/(b+x))
 ```
 
 Now, we get some estimation of goodness of fit:
 
 ``` R
-cor(y,predict(m))
+cor(y, predict(m))
 ```
 
-And lastly, we plot:
+And lastly, we plot both the data and the best fit non-linear equation line.
 
 ``` R
 plot(x,y)
-lines(x,predict(m),lty=2,col="red",lwd=3)
+lines(x, predict(m), lty=2, col="red", lwd=3)
 ```
 
 ### 3.3 Example 2 
