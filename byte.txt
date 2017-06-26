@@ -1,5 +1,0 @@
-Intro to Machine Learning with Regression
-
-Day 1, 6:00pm-9:00pm:
-	Sections 1.0 - .0:
-		
