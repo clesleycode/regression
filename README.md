@@ -1,8 +1,6 @@
 Intro to Regression Analysis 
 ==================
 
-Brought to you by [Lesley Cordero](http://www.columbia.edu/~lc2958), [Byte Academy](byteacademy.co), and [ADI](adicu.com).
-
 ## Table of Contents
 
 - [0.0 Setup](#00-setup)
@@ -58,17 +56,17 @@ Brought to you by [Lesley Cordero](http://www.columbia.edu/~lc2958), [Byte Acade
 
 ## 0.0 Setup
 
-This guide was written in R 3.2.3 and Python 3.5.
+This guide was written in R 3.2.3 and Python 3.6.
 
 ### 0.1 Python and Pip
 
-Download [Python](https://www.python.org/downloads/) and [Pip](https://pip.pypa.io/en/stable/installing/).
+If you havent't already, please download [Python](https://www.python.org/downloads/) and [Pip](https://pip.pypa.io/en/stable/installing/).
 
 Let's install the modules we'll need for this tutorial. Open up your terminal and enter the following commands to install the needed python modules: 
 
 ```
-pip3 install scikit-learn
-pip3 install scipy
+pip3 install scikit-learn==0.18.1
+pip3 install scipy==0.19.0
 ```
 
 ### 0.2 R and R Studio
