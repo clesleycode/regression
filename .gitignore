@@ -1,4 +1,4 @@
 .ipynb/
-__pycach__/
+__pycache__/
 *.pyc
 *.pyo
