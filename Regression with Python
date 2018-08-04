@@ -1,0 +1,1991 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Setup\n",
+    "\n",
+    "This guide was written in Python 3.6.\n",
+    "\n",
+    "### Python and Pip\n",
+    "\n",
+    "Download [Python](https://www.python.org/downloads/) and [Pip](https://pip.pypa.io/en/stable/installing/).\n",
+    "\n",
+    "Let's install the modules we'll need for this tutorial. Open up your terminal and enter the following commands to install the needed python modules: \n",
+    "\n",
+    "```\n",
+    "pip3 install scikit-learn\n",
+    "pip3 install scipy\n",
+    "```"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Introduction\n",
+    "\n",
+    "Regression Analysis is a predictive modeling technique for figuring out the relationship between a dependent and independent variable. This is used for forecasting, time series modeling, among others. \n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Linear Regression\n",
+    "\n",
+    "In Linear Regression, the dependent variable is continuous, and the independent variable(s) can be continuous or discrete, while nature of regression line is **linear**. Linear Regression establishes a relationship between the dependent variable (Y) and one or more independent variables (X), using a best fit straight line also known as regression line.\n",
+    "\n",
+    "If the data actually lies on a line, then two sample points will be enough to get a perfect prediction. But, as in the example below, the input data is seldom perfect, so our “predictor” is almost always off by a bit. In this image, it's clear that only a small fraction of the data points appear to lie on the line itself.\n",
+    "\n",
+    "![alt text](https://imgur.com/i87mKZc.png \"Logo Title Text 1\")\n",
+    "\n",
+    "It's obvious that we can't assume a perfect prediction based off of data like this, so instead we wish to summarize the trends in the data using a simple description mechanism. In this case, that mechanism is a *line*. Now the computation required to find the “best” coefficients of the line is straightforward once we pick a suitable definition of “best”. *This is what we mean by best fit line.* \n",
+    "\n",
+    "\n",
+    "## Basic Equation\n",
+    "\n",
+    "The variable that we want to predict, `y`, is called the independent variable. We can collect values of y for known values of x to derive the co-efficient and y-intercept of the model using certain assumptions. The equation looks like below:\n",
+    "\n",
+    "``` \n",
+    "y = a + bx + e\n",
+    "```\n",
+    "\n",
+    "Here, `a` is the y-intercept, `b` is the slope of the line, and `e` is the error term. Usually we don't know the error term, so we reduce this equation to:\n",
+    "\n",
+    "```\n",
+    "y = a + bx\n",
+    "```\n",
+    "\n",
+    "## Error Term\n",
+    "\n",
+    "The difference between the observed value of the dependent variable and the predicted value is called the error term, or residual. Each data point has *its own* residual.\n",
+    "\n",
+    "When a residual plot shows a random pattern, it indicated a good fit for a linear model. The error, or loss, function specifics depends on the type of machine learning algorithm. In Regression, it's (y - y&#770;)<sup>2</sup>, known as the <b>squared</b> loss. Note that the loss function is something that you must decide on based on the goals of learning. "
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Variance\n",
+    "\n",
+    "Recall that variance gives us an idea of the range or spread of our data and that we denote this value as &sigma;<sup>2</sup>. In the context of regression, this matters because it gives us an idea of how accurate our model is.\n",
+    "\n",
+    "For example, given the two graphs below, we can see that the second graph would be a more accurate model. \n",
+    "\n",
+    "![alt text](https://imgur.com/BwYD1vV.png \"Logo Title Text 1\")\n",
+    "\n",
+    "![alt text](https://imgur.com/kTu00k2.png \"Logo Title Text 1\")\n",
+    "\n",
+    "To figure out how precise future predictions will be, we then need to see how much the outputs very around the mean population regression line. Unfortunately, as &sigma;<sup>2</sup> is a population parameter, so we will rarely know its true value - that means we have to estimate it. "
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Assumptions\n",
+    "\n",
+    "There are four assumptions that allow for the use of linear regression models. If any of these assumptions is violated, then the forecasts, confidence intervals, and insights yielded by a regression model may be inefficient, biased, or misleading. \n",
+    "\n",
+    "### Linearity\n",
+    "\n",
+    "The first assumption is the linearity and additivity between dependent and independent variables. Because of this assumption, the expected value of dependent variable is a straight-line function of each independent variable, holding the others fixed. Lastly, the slope of this doesn't depend on the other variables. \n",
+    "\n",
+    "### Statistical Independence\n",
+    "\n",
+    "The statistical independence of the errors means there is no correlation between consecutive errors.\n",
+    "\n",
+    "### Homoscedasticity\n",
+    "\n",
+    "This refers to the idea that there is a constant variance of errors. This is true against time, predictions, and any independent variable. \n",
+    "\n",
+    "### Error Distribution\n",
+    "\n",
+    "This says that the distribution of errors is normal.\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Disadvantages\n",
+    "\n",
+    "First, if the data doesn't follow the normal distribution, the validity of the regression model suffers. \n",
+    "\n",
+    "Secondly, there can be collinearity problems, meaning if two or more independent variables are strongly correlated, they will eat into each other's predictive power. \n",
+    "\n",
+    "Thirdly, if a large number of variables are included, the model may become unreliable. Regressions doesn't automatically take care of collinearity.\n",
+    "\n",
+    "Lastly, regression doesn’t work with categorical variables with multiple values. These variables need to be converted to other variables before using them in regression models."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Example 1\n",
+    "\n",
+    "This example uses the first feature of the diabetes dataset to illustrate a two-dimensional plot of the linear regression technique. The straight line can be seen in the plot, showing how linear regression attempts to draw a straight line that will best minimize the sum of squares between the observed responses in the dataset, and the responses predicted by the linear approximation.\n",
+    "\n",
+    "First, we input the needed modules and load the diabetes dataset:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import matplotlib.pyplot as plt\n",
+    "import numpy as np\n",
+    "from sklearn import datasets, linear_model, metrics\n",
+    "diabetes = datasets.load_diabetes()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Since we're only using one feature, we pick it out: "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "diabetes_X = diabetes.data[:, np.newaxis, 2]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Next, we split the data into training/testing sets"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "diabetes_X_train = diabetes_X[:-20]\n",
+    "diabetes_X_test = diabetes_X[-20:]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "We do the same for the outputs: "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "diabetes_y_train = diabetes.target[:-20]\n",
+    "diabetes_y_test = diabetes.target[-20:]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Next, we create the linear regression object by calling the class:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "regr = linear_model.LinearRegression()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Now, we're able to train the model using the training sets"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "regr.fit(diabetes_X_train, diabetes_y_train)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Let's take a look at what our coefficients are:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "print('Coefficients: \\n', regr.coef_)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### Metrics\n",
+    "\n",
+    "For regression, we use the **Sum of Squared Error**, which is the following formula:\n",
+    "\n",
+    "$$ \\sum_j \\left[f(X_{j \\cdot}) - y_j\\right]^2. $$\n",
+    "\n",
+    "In Python, you can compute this with `numpy` and built-in mathematical operators:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "print(np.mean((regr.predict(diabetes_X_test) - diabetes_y_test) ** 2))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "However, you can also use the built-in methods provided by `sklearn` to compute the mean squared error. "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "print( metrics.mean_squared_error(regr.predict(diabetes_X_test), diabetes_y_test))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Since the sum of squared error is susceptible to outliers, when a particular set of data contains outliers, we use the **Absolute Error** instead:\n",
+    "\n",
+    "$$ \\sum_j \\left|f(X_{j \\cdot}) - y_j\\right|. $$\n",
+    "\n",
+    "In Python, this looks very similar to the `mean_squared_error` function call:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "print(metrics.mean_absolute_error(regr.predict(diabetes_X_test), diabetes_y_test))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Now let's see what the variance is: "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "print('Variance score: %.2f' % regr.score(diabetes_X_test, diabetes_y_test))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "And finally, let's plot the outputs of the test data:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.scatter(diabetes_X_test, diabetes_y_test,  color='black')\n",
+    "plt.plot(diabetes_X_test, regr.predict(diabetes_X_test), color='blue',\n",
+    "         linewidth=3)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Let's see what we get! "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.xticks(())\n",
+    "plt.yticks(())\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Non Linear Regression\n",
+    "\n",
+    "Non-linear regression analysis uses a curved function, usually a polynomial, to capture the non-linear relationship between the two variables. The regression is often constructed by optimizing the parameters of a higher-order polynomial such that the line best fits a sample of (x, y) observations.\n",
+    "\n",
+    "There are cases where non-linear models are <b>intrinsically linear</b>, meaning they can be made linear by simple transformation. But more interestingly, are the ones where it can't.\n",
+    "\n",
+    "While a polynomial regression might seem like the best option to produce a low error, it's important to be aware of the possibility of overfitting your data. Always plot the relationships to see the fit and focus on making sure that the curve fits the nature of the problem. \n",
+    "\n",
+    "![alt text](https://imgur.com/wvhGgk3.png)\n",
+    "\n",
+    "\n",
+    "### Start Values\n",
+    "\n",
+    "Finding good starting values is very important in non-linear regression to allow the model algorithm to converge. If you set starting parameters values completely outside of the range of potential parameter values the algorithm will either fail or it will return non-sensical parameter like for example returning a growth rate of 1000 when the actual value is 1.04.\n",
+    "\n",
+    "The best way to find correct starting value is to eyeball the data, plotting them and based on the understanding that you have from the equation find approximate starting values for the parameters.\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "collapsed": true
+   },
+   "source": [
+    "### Example 1\n",
+    "\n",
+    "We begin by loading in the needed modules and data: "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import numpy as np\n",
+    "from scipy.optimize import curve_fit\n",
+    "import matplotlib.pyplot as plt\n",
+    "xdata = np.array([-2,-1.64,-1.33,-0.7,0,0.45,1.2,1.64,2.32,2.9])\n",
+    "ydata = np.array([0.699369,0.700462,0.695354,1.03905,1.97389,2.41143,1.91091,0.919576,-0.730975,-1.42001])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "collapsed": true
+   },
+   "source": [
+    "Before we start, let's get a look at the scatterplot: "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.plot(xdata,ydata,\"*\")\n",
+    "plt.xlabel(\"xdata\")\n",
+    "plt.ylabel(\"ydata\")\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Here, I define the fit function:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def func(x, p1,p2):\n",
+    "    return(p1*np.cos(p2*x) + p2*np.sin(p1*x))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "This is where we calculate and show fit parameters: "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "popt, pcov = curve_fit(func, xdata, ydata,p0=(1.0,0.2))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Next, we calculate and show sum of squares of residuals since it's not given by the curve_fit function"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "p1 = popt[0]\n",
+    "p2 = popt[1]\n",
+    "residuals = ydata - func(xdata,p1,p2)\n",
+    "fres = sum(residuals**2)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "And finally, let's plot the curve line along with our data:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "curvex = np.linspace(-2,3,100)\n",
+    "curvey = func(curvex,p1,p2)\n",
+    "plt.plot(xdata,ydata,\"*\")\n",
+    "plt.plot(curvex,curvey,\"r\")\n",
+    "plt.xlabel(\"xdata\")\n",
+    "plt.ylabel(\"xdata\")\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "# Multiple Linear Regression\n",
+    "\n",
+    "Multiple linear regression is similar to simple linear regression, the only difference being the use of more than one input variable. This means we get a basic equation that's slightly different from linear regression.\n",
+    "\n",
+    "\n",
+    "## Basic Equation\n",
+    "\n",
+    "In multiple linear regression, there is more than one explanatory variable. The basic equation we've seen before becomes:\n",
+    "\n",
+    "Y<sub>i</sub> = m<sub>0</sub> + m<sub>1X</sub>1i</sub> + m<sub>2</sub>X<sub>2i</sub> + &isin;<sub>i</sub>\n",
+    "\n",
+    "where &isin;<sub>i</sub> are independent random variables with a mean of 0. \n",
+    "\n",
+    "## Assumptions\n",
+    "\n",
+    "The assumptions are the same as for simple regression.\n",
+    "\n",
+    "## Mutlicollinearity\n",
+    "\n",
+    "Recall, multicollinearity occurs when two or more variables are related. The best way of dealing with multicollinearity is to understand the cause and remove it. If one of the variables appears to be redundant, removing it can reduce multicollinearity. To make this decision, examine the correlations between variables.\n",
+    " \n",
+    "Other strategies include:\n",
+    "\n",
+    "- Figuring out if there is a way to combine the variables.\n",
+    "- Increasing the sample size of your study. \n",
+    "- Centering the variables by computing the mean of each independent variable and then replacing each value with the difference between it and the mean."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Example 1\n",
+    "\n",
+    "Here, we import our `scikit-learn` module and declare our input data, X and Y, as lists:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn.linear_model import LinearRegression\n",
+    "x = [[2,4],[3,6],[4,5],[6,7],[3,3],[2,5],[5,2]]\n",
+    "y = [14,21,22,32,15,16,19]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Next, we initialize the model then train it on the data"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "genius_regression_model = LinearRegression()\n",
+    "genius_regression_model.fit(x,y)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "And finally, we predict the corresponding value of Y for X = [8,4]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Logistic Regression\n",
+    "\n",
+    "Logistic Regression is a statistical technique capable of predicting a <b>binary</b> outcome. Its output is a continuous range of values between 0 and 1, commonly representing the probability of some event occurring. Logistic regression is fairly intuitive and very effective - we'll review the details now."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "print(genius_regression_model.predict([8,4]))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Example 1\n",
+    "\n",
+    "Here, we'll use the Iris dataset from the Scikit-learn datasets module. We'll use 2 of the classes to keep this binary. \n",
+    "\n",
+    "First, let's begin by importing the needed modules and dataset: "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn import datasets\n",
+    "import matplotlib.pyplot as plt\n",
+    "import seaborn as sns\n",
+    "sns.set(style='ticks', palette='Set2')\n",
+    "import pandas as pd\n",
+    "import numpy as np\n",
+    "import math\n",
+    "from __future__ import division\n",
+    "data = datasets.load_iris()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "X = data.data[:100, :2]\n",
+    "y = data.target[:100]\n",
+    "X_full = data.data[:100, :]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Before we make the logistic regression function, let's take a look to see what we're working with:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "setosa = plt.scatter(X[:50,0], X[:50,1], c='b')\n",
+    "versicolor = plt.scatter(X[50:,0], X[50:,1], c='r')\n",
+    "plt.xlabel(\"Sepal Length\")\n",
+    "plt.ylabel(\"Sepal Width\")\n",
+    "plt.legend((setosa, versicolor), (\"Setosa\", \"Versicolor\"))\n",
+    "sns.despine()\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Now you can see that the two classes are completely separate! That means we can [more easily] find a function that separates the two classes. \n",
+    "\n",
+    "We want to return a value between 0 and 1 to represent a probability. To do this we make use of the logistic function. The logistic function mathematically looks like this:\n",
+    "\n",
+    "$$ \\frac{1}{1+e^{-x}} $$\n",
+    "\n",
+    "Let's take a look at this plot:\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "x_values = np.linspace(-5, 5, 100)\n",
+    "y_values = [1 / (1 + math.e**(-x)) for x in x_values]\n",
+    "plt.plot(x_values, y_values)\n",
+    "plt.axhline(.5)\n",
+    "plt.axvline(0)\n",
+    "sns.despine()\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "You can see why this is a great function for a probability measure. The y-value represents the probability and only ranges between 0 and 1. Also, for an x value of zero you get a .5 probability and as you get more positive x values you get a higher probability and more negative x values a lower probability.\n",
+    "\n",
+    "Recall the function from earlier, Y<sub>i</sub> = m<sub>0</sub> + m<sub>1</sub>X<sub>1i</sub> + m<sub>2</sub>X<sub>2i</sub> + &isin;<sub>i</sub>. We can assume that x is a linear combination of the data plus an intercept, so we get the following formula:\n",
+    "\n",
+    "x = &beta;<sub>0</sub> + &beta;<sub>1</sub>SW + &beta;<sub>2</sub>SL\n",
+    "\n",
+    "where SW is our sepal width and SL is our sepal length. But how do we get our &beta; values? This is where the learning in machine learning comes in. "
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Cost Function \n",
+    "\n",
+    "We want to choose Î² values to maximize the probability of correctly classifying our plants. If we assume our data are independent and identically distributed (iid), we can take the product of all our individually calculated probabilities and that is the value we want to maximize. We get the following formula:\n",
+    "\n",
+    "![alt text](https://imgur.com/GYaAQUI.png \"Logo Title Text 1\")\n",
+    "\n",
+    "This simplifies to: &prod;<sub>setosa</sub> h(x) &prod;<sub>versicolor</sub> 1 - h(x). So now we know what to maximize. We can also switch it to - &prod;<sub>setosa</sub> h(x) &prod;<sub>versicolor</sub> 1 - h(x) and minimize this since minimizing the negative is the same as maximizing the positive. \n",
+    "\n",
+    "We can implement this logistic function like this:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def logistic_func(theta, x):\n",
+    "    return (float(1) / (1 + math.e**(-x.dot(theta))))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "And finally, in python, we put all the components together like this: "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def cost_func(theta, x, y):\n",
+    "    log_func_v = logistic_func(theta,x)\n",
+    "    y = np.squeeze(y)\n",
+    "    step1 = y * np.log(log_func_v)\n",
+    "    step2 = (1-y) * np.log(1 - log_func_v)\n",
+    "    final = -step1 - step2\n",
+    "    return (np.mean(final))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Gradients\n",
+    "\n",
+    "We now know what value to minimize, but now we need to figure out how to find the &beta; values. This is where convex optimization comes in. \n",
+    "\n",
+    "Since we know the logistic cost function is convex, it has a single global minimum which we can converge using gradient descent. \n",
+    "\n",
+    "The idea behind gradient descent is to pick a point on the curve and follow it down to the minimum. The way we follow the curve is by calculating the gradients or the first derivatives of the cost function with respect to each &beta;.\n",
+    "\n",
+    "Now if we define y<sub>i</sub> to be 1 for sentose and 0 for when it's versicolor, then we can simplify to h(x) and 1 - h(x). Recall [log rules](http://www.mathwords.com/l/logarithm_rules.htm). If we take the log of our cost function, our product becomes a sum:\n",
+    "\n",
+    "![alt text](https://imgur.com/JiheY3M.png \"Logo Title Text 1\")\n",
+    "\n",
+    "The next step is to take the derivative with respect to &beta;<sub>0</sub>. Remembering that the derivate of log(x) is 1/x, we get:\n",
+    "\n",
+    "$$ \\frac{y_i}{h(x_i)} + \\frac{1 - y_i}{1-h(x_i)} $$\n",
+    "\n",
+    "We have to take the derivative of h(x), which we can do with the quotient rule to see that it's: \n",
+    "\n",
+    "$$ \\frac{e^{-x}}{(1+e^{-x})^2} $$\n",
+    "\n",
+    "$$ = \\frac{1}{1+e^{-x}} (1 - \\frac{1}{1+e^{-x}} $$\n",
+    "\n",
+    "$$ = h(x)(1-h(x)) $$\n",
+    "\n",
+    "Since the derivative of x with respect to &beta;<sub>0</sub> is just 1, we can put all of this together to get: \n",
+    "\n",
+    "$$ \\frac{y_i h(x_i)(1-h(x_i))}{h(x_i)} - \\frac{(1 - y_i)h(x_i)(1-h(x_i))}{1 - h(x_i)} $$\n",
+    "\n",
+    "Now we can simplify this to \n",
+    "\n",
+    "$$ y_i(1 - h(x_i)) - (1-y_i)h(x_i) $$ \n",
+    "\n",
+    "$$ = y_i - y_i h(x_i) - h(x_i) + y_i h(x_i) $$\n",
+    "\n",
+    "$$ = y_i - h(x_i) $$\n",
+    "\n",
+    "So finally we get: \n",
+    "\n",
+    "$$ \\Sigma_{i=1}^{100} h(x_i) - y_i $$\n",
+    "\n",
+    "For $\\beta_1$, we get:\n",
+    "\n",
+    "$$ \\Sigma_{i=1}^{100} (h(x_i) - y_i) SW_i $$\n",
+    "\n",
+    "For $\\beta_2$, we get: \n",
+    "\n",
+    "$$ \\Sigma_{i=1}^{100} (h(x_i) - y_i) SL_i $$"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "In Python, we can write:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def log_gradient(theta, x, y):\n",
+    "    first_calc = logistic_func(theta, x) - np.squeeze(y)\n",
+    "    final_calc = first_calc.T.dot(x)\n",
+    "    return (final_calc)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Gradient Descent\n",
+    "\n",
+    "So now that we have our gradients, we can use the gradient descent algorithm to find the values for our &beta;s that minimize our cost function. The algorithm is as follows:\n",
+    "\n",
+    "1. Initially guess any values for &beta;\n",
+    "2. Repeat until we converge: &beta;<sub>i</sub> = &beta;<sub>i</sub>-(&alpha;* gradient with respect to &beta;<sub>i</sub>) for i = 0, 1, 2\n",
+    "\n",
+    "Note that &alpha; is our learning rate, which is the rate at which we move towards our cost curve. \n",
+    "\n",
+    "Basically, we pick a random point on our cost curve, check to see which direction we need to go to get closer to the minimum by using the negative of the gradient, and then update our &beta; values to move closer to the minimum.\n",
+    "\n",
+    "If we implement this all in python, we would get something like:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def grad_desc(theta_values, X, y, lr=.001, converge_change=.001):\n",
+    "    # normalize\n",
+    "    X = (X - np.mean(X, axis=0)) / np.std(X, axis=0)\n",
+    "    # setup cost iter\n",
+    "    cost_iter = []\n",
+    "    cost = cost_func(theta_values, X, y)\n",
+    "    cost_iter.append([0, cost])\n",
+    "    change_cost = 1\n",
+    "    i = 1\n",
+    "    while(change_cost > converge_change):\n",
+    "        old_cost = cost\n",
+    "        theta_values = theta_values - (lr * log_gradient(theta_values, X, y))\n",
+    "        cost = cost_func(theta_values, X, y)\n",
+    "        cost_iter.append([i, cost])\n",
+    "        change_cost = old_cost - cost\n",
+    "        i+=1\n",
+    "    return(theta_values, np.array(cost_iter))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Prediction\n",
+    "\n",
+    "The goal to this entire exercise was to show how Logistic Regression can be used for prediction. We went through the process of implementing a cost function, gradient descent -- now we have to put it all together to predict the values!\n",
+    "\n",
+    "Let's walk through this code: \n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def pred_values(theta, X, hard=True):\n",
+    "    # normalize\n",
+    "    X = (X - np.mean(X, axis=0)) / np.std(X, axis=0)\n",
+    "    pred_prob = logistic_func(theta, X)\n",
+    "    pred_value = np.where(pred_prob >= .5, 1, 0)\n",
+    "    if hard:\n",
+    "        return (pred_value)\n",
+    "    return (pred_prob)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Here I use the above code. I initalize our Î² values to zeros and then run gradient descent to learn these values.\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "shape = X.shape[1]\n",
+    "y_flip = np.logical_not(y) #f lip Setosa to be 1 and Versicolor to zero to be consistent\n",
+    "betas = np.zeros(shape)\n",
+    "fitted_values, cost_iter = grad_desc(betas, X, y_flip)\n",
+    "print(fitted_values)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Now we run the `predicted_y()` function to see our probability: "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "predicted_y = pred_values(fitted_values, X)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "We get 99, which means we got all but 1 value correctly.\n",
+    "\n",
+    "But can we do another check by taking a look at how our gradient descent converged:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.plot(cost_iter[:,0], cost_iter[:,1])\n",
+    "plt.ylabel(\"Cost\")\n",
+    "plt.xlabel(\"Iteration\")\n",
+    "sns.despine()\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "You can see that as we ran our algorithm, we continued to decrease our cost function and we stopped right at about when we see the decrease in cost to level out. Nice - everything seems to be working! Lastly, another nice check is to see how well a packaged version of the algorithm does:\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn import linear_model\n",
+    "logreg = linear_model.LogisticRegression()\n",
+    "logreg.fit(X, y_flip)\n",
+    "sum(y_flip == logreg.predict(X))"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Time Series\n",
+    "\n",
+    "A time series is a set of observations of a single variable at multiple different points in time. Time series data is different in that these observations <i>are</i> dependent on another variable. For example, the stock price of Microsoft today <i>is</i> related to the stock price yesterday.\n",
+    "\n",
+    "### Stationarity \n",
+    "\n",
+    "A process is said to be <b>stationary</b> if the distribution of the observed values does <i>not</i> depend on time. For a stationary process, what we want is the distribution of the observed variable to be independent of time, so the mean and variance of our observations should be constant over time.\n",
+    "\n",
+    "If we take the trends out of data, we can make it stationary, which then allows us to properly run regressions against other variables. Otherwise we would risk results that conflate the time trend with the effect of the other variables.  We can make data stationary by taking differences of the observations. \n",
+    "\n",
+    "### Autoregressive Model\n",
+    "\n",
+    "In an autoregressive model, the response variable is regressed against previous values from the same time series. We say that a process if AR(1) if only the previous observed value is used. A process that uses the previous p values is called AR(p). A classic example of an AR(1) process is a random walk. In a random walk, a \"walker\" has an equal chance of stepping left or stepping right.\n",
+    "\n",
+    "### Moving Average Model\n",
+    "\n",
+    "A moving average model is similar to an autoregressive model except that instead of being based on the previous observed values, the model describes a relationship between an observation and the previous error terms. We say that a process is MA(1) if only the previous observed value is used. A process that uses the previous p values is called MA(p).\n",
+    "\n",
+    "### Analysis\n",
+    "\n",
+    "The New York Independent System Operator (NYISO) operates competitive wholesale markets to manage the flow of electricity across New York. We will be using this data, along with weather forecasts, to create a model that predicts electricity prices.\n",
+    "\n",
+    "We begin by importing the needed modules and load the data:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import pandas as pd\n",
+    "import numpy as np\n",
+    "from pandas.tools.plotting import autocorrelation_plot\n",
+    "from matplotlib import pyplot as plt\n",
+    "from statsmodels.tsa.arima_model import ARIMA\n",
+    "from statsmodels.tsa.stattools import adfuller\n",
+    "import statsmodels.api as sm\n",
+    "\n",
+    "plt.rcParams['figure.figsize'] = (10, 6)\n",
+    "day_ahead_market = pd.read_csv('./data/day_ahead_market_lbmp.csv')\n",
+    "real_time_market = pd.read_csv('./data/real_time_market_lbmp.csv')\n",
+    "weather_forecast = pd.read_csv('./data/weather_forecast.csv')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "We want to have the times in actual time objects, but right now they're strings, so we have to convert string date column to a datetime type:\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "day_ahead_market['Time Stamp'] = pd.to_datetime(day_ahead_market['Time Stamp'], format='%m/%d/%Y %H:%M')\n",
+    "real_time_market['Time Stamp'] = pd.to_datetime(real_time_market['Time Stamp'], format='%m/%d/%Y %H:%M:%S')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Now we have to do the same for the weather data:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "weather_forecast['Forecast Date'] = pd.to_datetime(weather_forecast['Forecast Date'], format='%m/%d/%Y')\n",
+    "weather_forecast['Vintage Date'] = pd.to_datetime(weather_forecast['Vintage Date'], format='%m/%d/%Y')\n",
+    "weather_forecast['Vintage'] = weather_forecast['Vintage'].astype('category')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Now we're going to re-index the data by name of region and timestamp. This helps us manipulate and access the data. \n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "dam_time_name = day_ahead_market.set_index(['Name', 'Time Stamp'])\n",
+    "rtm_time_name = real_time_market.set_index(['Name', 'Time Stamp'])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "We're only looking at the data for NYC, so we then select just the data for that:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "dam_nyc_lbmp = dam_time_name['LBMP ($/MWHr)']['N.Y.C.']\n",
+    "rtm_nyc_lbmp = rtm_time_name['LBMP ($/MWHr)']['N.Y.C.']"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "So then we plot this to see the emerging relationships on the data that's a day ahead:\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.figure(figsize=(10,8))\n",
+    "dam_nyc_lbmp.plot(title='NYC Day Ahead LBMP 2015')\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "And next for the data in real time:\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.figure(figsize=(10,8))\n",
+    "rtm_nyc_lbmp.plot(title='NYC Realtime LBMP 2015')\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The timestamps on the realtime data and day ahead data don't actually line up. The realtime data has observations every 5 minutes while the day ahead data has observations every hour. So we need to fix this by aligning the two series of data.\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "aligned_dam, aligned_rtm = rtm_nyc_lbmp.align(dam_nyc_lbmp, join='inner')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Next, we remote duplicates:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "no_dup_al_dam = aligned_dam[~aligned_dam.index.duplicated(keep='first')]\n",
+    "no_dup_al_rtm = aligned_rtm[~aligned_dam.index.duplicated(keep='first')]\n",
+    "\n",
+    "no_dup_al_dam.name = 'dam_lbmp'\n",
+    "no_dup_al_rtm.name = 'rtm_lbmp'"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Next step is to insert this data into a dataframe. The dataframe is too wide, however, so we transpose it:\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "dam_rtm_df = pd.DataFrame([no_dup_al_dam, no_dup_al_rtm]).transpose()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Now that we have our pricing data for the NYC region, we need to get the weather data ready. The weather data comes from a different data source, and unfortunately it's not split into the same exact regions as the pricing data. To remedy this, we'll pick two weather stations nearby - the ones located at JFK airport and LGA airport - and average the temperatures together.\n",
+    "\n",
+    "This gets all the temperature data from LGA and JFK stations: "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "lga_and_jfk_indexed = weather_forecast[(weather_forecast['Station ID'] == 'LGA') |\n",
+    "                                       (weather_forecast['Station ID'] == 'JFK')].set_index(['Forecast Date',\n",
+    "                                                                                             'Vintage Date',\n",
+    "                                                                                             'Vintage',\n",
+    "                                                                                             'Station ID'])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "We still have to prep our data a bit more. So first we unindex, which will flatten our dataframe. Next, we pick out the rows with the Vintage being 'Actual' because we've got a few different kinds of dates floating around and it's important to stay consistent. Our end goal is to have our data like:\n",
+    "\n",
+    "```\n",
+    "Time stamp: today\n",
+    "Temperature: the actual temperature today (x)\n",
+    "Day ahead price: today's price for electricity tomorrow (x)\n",
+    "Realtime price: tomorrrow's electricity price observed tomorrow (y)\n",
+    "```\n",
+    "\n",
+    "To accomplish this, we write:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "mean_nyc_indexed = lga_and_jfk_indexed.mean(level=[0,1,2])\n",
+    "mean_nyc = mean_nyc_indexed.reset_index()\n",
+    "actual_temp_df = mean_nyc[mean_nyc['Vintage'] == 'Actual'] \\\n",
+    "    .groupby(['Vintage Date']).first() \\\n",
+    "    .rename(columns=lambda x: 'Actual ' + x) # prepend the word Actual to column names\n",
+    "dam_rtm_act_df = dam_rtm_df.join(actual_temp_df, how='left').fillna(method='ffill').dropna()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {
+    "collapsed": true
+   },
+   "source": [
+    "Next, observe that there is a different day ahead price every single hour, but only a single temperature estimate per day. We'll do something similar to the frequency mismatch we saw with day ahead/realtime data - resample at the lower frequency and average the data in those lower frequency buckets.\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "daily_df = dam_rtm_act_df.resample('D', how='mean')"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The next question is whether to use the max temp or min temp. Let's take a look at the data to see if one or the other makes a difference: \n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.figure(figsize=(14,10))\n",
+    "plt.plot_date(daily_df.index, daily_df['rtm_lbmp'], '-', label='RTM LBMP')\n",
+    "plt.plot_date(daily_df.index, daily_df['dam_lbmp'], '-', label='DAM LBMP')\n",
+    "plt.plot_date(daily_df.index, daily_df['Actual Min Temp'], '-', label='Min Temp')\n",
+    "plt.plot_date(daily_df.index, daily_df['Actual Max Temp'], '-', label='Max Temp')\n",
+    "plt.legend()\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Min and max temperature seem to be so highly correlated with each other that it most likely won't matter one way or another which we used."
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### Model Estimation\n",
+    "\n",
+    "Now that our data is in the format we want, we can complete a regression called ARIMA. It's a combination of 3 types of models - AutoRegressive (a combination of the previous values), Integrated (differencing the data), Moving Average (smoothing the data). It's typically represented as:\n",
+    "\n",
+    "```\n",
+    "arima(# of AR terms, # of differences, # of smoothing terms) = arima(p, d, q)\n",
+    "```\n",
+    "\n",
+    "So how can we go about picking our parameters? A common approach is to use the Box-Jenkins Method for parameter selection. First, you pick parameter d. You can do this using a Dickey-Fuller test. Then, you can use autocorrelation function (ACF) and partial autocorrelation function (PACF) to identify the AR parameter (p) and the MA parameter (q).\n",
+    "\n",
+    "For our example, we'll just pick ARIMA(0,0,1) for its simplicity (this is therefore just an MA(1) process).\n",
+    "\n",
+    "Before fitting the model, we'll split our data into the training and test data:\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "exog_data = np.array([daily_df['Actual Max Temp'].values, daily_df['dam_lbmp'].values])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Now we can fit the model on a portion of the data"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "k = 250\n",
+    "m = ARIMA(daily_df['rtm_lbmp'].values[0:k], [0,0,1], exog=np.transpose(exog_data[:,0:k]), dates=daily_df.index.values[0:k])\n",
+    "results = m.fit(trend='nc', disp=True)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Let's look at the predicted prices:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "predicted_prices = results.predict(10, 364, exog=np.transpose(exog_data), dynamic=True)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Now let's look at it graphically:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.figure(figsize=(14, 10))\n",
+    "plt.plot(predicted_prices, label='prediction')\n",
+    "plt.plot(daily_df['rtm_lbmp'].values, label='actual RTM')\n",
+    "plt.legend()\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "#### Analysis\n",
+    "\n",
+    "Our model seems to work well from the graph of the forecast. Looking at the coefficients from the ARIMA model, we can see that increasing temperatures and increasing day ahead prices are both associated with higher realtime prices the next day. Just by looking at the coefficients, you can see that our forecast is extremely similar to the day ahead values, with a small adjustment based on temperature and another adjustment based on the moving average term."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "plt.figure(figsize=(14, 10))\n",
+    "plt.plot(predicted_prices, label='prediction')\n",
+    "plt.plot(daily_df['rtm_lbmp'].values, label='actual RTM')\n",
+    "plt.plot(daily_df['dam_lbmp'].values, label='actual DAM')\n",
+    "plt.legend()\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Our data and model helps us predict the realtime electricity cost the day before. If you ran a company with significant power demands, you might be able to use such a model to decide whether or not to buy electricity in advance or on demand. Let's see how it would work:\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "len(predicted_prices)\n",
+    "len(daily_df['rtm_lbmp'].values[10:])\n",
+    "\n",
+    "print(\"--- Trading Log ---\")\n",
+    "\n",
+    "i = 251\n",
+    "PnL = np.zeros(100)\n",
+    "\n",
+    "\n",
+    "while i < 351:\n",
+    "    if (predicted_prices[i] < daily_df['dam_lbmp'].values[i]) and (daily_df['rtm_lbmp'].values[i+1] < daily_df['dam_lbmp'].values[i]):\n",
+    "        \n",
+    "        # if our model says the DAM is overpriced, then don't pre-buy and buy at the realtime price\n",
+    "        \n",
+    "        print(\"Buy RTM, +\", daily_df['dam_lbmp'].values[i] - daily_df['rtm_lbmp'].values[i+1])\n",
+    "        PnL[i-251] = daily_df['dam_lbmp'].values[i] - daily_df['rtm_lbmp'].values[i+1]\n",
+    "        \n",
+    "    elif (predicted_prices[i] > daily_df['dam_lbmp'].values[i]) and (daily_df['rtm_lbmp'].values[i+1] > daily_df['dam_lbmp'].values[i]):\n",
+    "        \n",
+    "        # if our model says the DAM is underpriced, pre-buy the electricity so you don't have to pay realtime price \n",
+    "        \n",
+    "        print(\"Buy DAM, +\", daily_df['rtm_lbmp'].values[i+1] - daily_df['dam_lbmp'].values[i] )\n",
+    "        PnL[i-251] = daily_df['rtm_lbmp'].values[i+1] - daily_df['dam_lbmp'].values[i]\n",
+    "        \n",
+    "    else:\n",
+    "        \n",
+    "        # if we were wrong, we lose money :(\n",
+    "        \n",
+    "        print(\"Lose $$, -\", max(daily_df['rtm_lbmp'].values[i+1] - daily_df['dam_lbmp'].values[i],daily_df['dam_lbmp'].values[i] - daily_df['rtm_lbmp'].values[i+1]))\n",
+    "        PnL[i-251] = min(daily_df['rtm_lbmp'].values[i+1] - daily_df['dam_lbmp'].values[i],daily_df['dam_lbmp'].values[i] - daily_df['rtm_lbmp'].values[i+1])\n",
+    "    i = i+1"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Now lets take a look at the visualization:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "cumPnL = np.cumsum(PnL)\n",
+    "plt.figure(figsize=(10, 8))\n",
+    "plt.plot(cumPnL, label='PnL')\n",
+    "plt.legend()\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Looks like the model works because it predicts every so slightly closer to the true RTM than the DAM!\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "dam_adj = daily_df['rtm_lbmp'].values[10:]-daily_df['dam_lbmp'].values[:-10]\n",
+    "mod_adj = daily_df['rtm_lbmp'].values[10:]-predicted_prices[:-1]\n",
+    "plt.figure(figsize=(10, 8))\n",
+    "plt.plot(dam_adj, label='DAM error')\n",
+    "plt.plot(mod_adj, label='Model error')\n",
+    "plt.legend()\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "## Ridge and Lasso Regression\n",
+    "\n",
+    "Ridge and Lasso regression are powerful techniques used for making efficient models with a large number of features. They work by penalizing the magnitude of coefficients of features along with minimizing the error between predicted and actual observations. These are called <b>regularization</b> techniques.\n",
+    "\n",
+    "Ridge Regression specifically performs <b>L2</b> regularization, which means that it adds penalty equality to the <i>square</i> of magnitude of coefficients.\n",
+    "\n",
+    "Lasso Regression, on the other hand, performs <b>L1</b> Regression, which means that it adds penalty equivalent to the <i>absolute</i> value of magnitude of coefficients.\n",
+    "\n",
+    "\n",
+    "### Penalization \n",
+    "\n",
+    "Lets try to understand the impact of model complexity on the magnitude of coefficients. As an example, I have simulated a sine curve (between 60° and 300°) and added some random noise using the following code:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import numpy as np\n",
+    "import pandas as pd\n",
+    "import random\n",
+    "import matplotlib.pyplot as plt\n",
+    "from matplotlib.pylab import rcParams\n",
+    "rcParams['figure.figsize'] = 12, 10"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Here, we just define input array with angles from 60 degrees to 300 degrees converted to radians:\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "x = np.array([i*np.pi/180 for i in range(60,300,4)])\n",
+    "np.random.seed(10)  \n",
+    "y = np.sin(x) + np.random.normal(0,0.15,len(x))\n",
+    "data = pd.DataFrame(np.column_stack([x,y]),columns=['x','y'])\n",
+    "plt.plot(data['x'],data['y'],'.')\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "The visualization resembles a sine curve but not exactly because of the noise we've input. Lets try to estimate the sine function using polynomial regression with powers of x from 1 to 15. Lets add a column for each power upto 15 in our dataframe. This can be accomplished using the following code:\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "for i in range(2,16):  # power of 1 is already there\n",
+    "    colname = 'x_%d'%i      # new var will be x_power\n",
+    "    data[colname] = data['x']**i"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Now that we have all the 15 powers, lets make 15 different linear regression models with each model containing variables with powers of x from 1 to the particular model number. For example, the feature set of model 8 will be $\\in$ {x, $x_2, x_3, ... , x_8$}.\n",
+    "\n",
+    "First, we'll define a generic function which takes in the required maximum power of x as an input and returns a list containing [model RSS, intercept, $coef_x$, $coef_{x2}$, $coef_{xy}$ ], where RSS refers to Residual Sum of Squares which is nothing but the sum of square of errors between the predicted and actual values in the training data set:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn.linear_model import LinearRegression"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Here, we start out linear regression model by initializing the predictors:\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def linear_regression(data, power, models_to_plot):\n",
+    "    #initialize predictors:\n",
+    "    predictors=['x']\n",
+    "    if power>=2:\n",
+    "        predictors.extend(['x_%d'%i for i in range(2,power+1)])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Then we fit the model:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "    linreg = LinearRegression(normalize=True)\n",
+    "    linreg.fit(data[predictors],data['y'])\n",
+    "    y_pred = linreg.predict(data[predictors])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Next, we check if a plot is to be made for the entered power:\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "    if power in models_to_plot:\n",
+    "        plt.subplot(models_to_plot[power])\n",
+    "        plt.tight_layout()\n",
+    "        plt.plot(data['x'],y_pred)\n",
+    "        plt.plot(data['x'],data['y'],'.')\n",
+    "        plt.title('Plot for power: %d'%power)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Lastly, we return the result in pre-defined format\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "    rss = sum((y_pred-data['y'])**2)\n",
+    "    ret = [rss]\n",
+    "    ret.extend([linreg.intercept_])\n",
+    "    ret.extend(linreg.coef_)\n",
+    "    return (ret)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def linear_regression(data, power, models_to_plot):\n",
+    "    #initialize predictors:\n",
+    "    predictors=['x']\n",
+    "    if power>=2:\n",
+    "        predictors.extend(['x_%d'%i for i in range(2,power+1)])\n",
+    "    linreg = LinearRegression(normalize=True)\n",
+    "    linreg.fit(data[predictors],data['y'])\n",
+    "    y_pred = linreg.predict(data[predictors])\n",
+    "    if power in models_to_plot:\n",
+    "        plt.subplot(models_to_plot[power])\n",
+    "        plt.tight_layout()\n",
+    "        plt.plot(data['x'],y_pred)\n",
+    "        plt.plot(data['x'],data['y'],'.')\n",
+    "        plt.title('Plot for power: %d'%power)\n",
+    "    rss = sum((y_pred-data['y'])**2)\n",
+    "    ret = [rss]\n",
+    "    ret.extend([linreg.intercept_])\n",
+    "    ret.extend(linreg.coef_)\n",
+    "    return (ret)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Now, we can make all 15 models and compare the results. We'll store all the results in a Pandas dataframe and plot 6 models to get an idea of the trend.\n",
+    "\n",
+    "First, we initialize a dataframe to store the results:\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "col = ['rss','intercept'] + ['coef_x_%d'%i for i in range(1,16)]\n",
+    "ind = ['model_pow_%d'%i for i in range(1,16)]\n",
+    "coef_matrix_simple = pd.DataFrame(index=ind, columns=col)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Next, we define the powers for which a plot is required:\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "models_to_plot = {1:231,3:232,6:233,9:234,12:235,15:236}"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Lastly, we iterate through all powers and assimilate results\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "for i in range(1,16):\n",
+    "    coef_matrix_simple.iloc[i-1,0:i+2] = linear_regression(data, power=i, models_to_plot=models_to_plot)\n",
+    "\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "As you can, models with increasing complexity to better fit the data and result in lower RSS values. This makes sense because as the model complexity increases, the models tends to overfit. \n",
+    "\n",
+    "\n",
+    "As far as coefficients go, the size of coefficients increases exponentially with increase in model complexity. We can see this here:\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "pd.options.display.float_format = '{:,.2g}'.format\n",
+    "coef_matrix_simple"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "What does a large coefficient mean? It means that we're putting a lot of emphasis on that feature, i.e. the particular feature is a good predictor for the outcome. When it becomes too large, the algorithm starts modelling intricate relations to estimate the output and ends up overfitting to the particular training data.\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Ridge Regression\n",
+    "\n",
+    "Recall, ridge regression performs <b>L2 </b>regularization, i.e. it adds a factor of sum of squares of coefficients in the optimization objective, so it ends up optimizing:\n",
+    "\n",
+    "```\n",
+    "Objective = RSS + $\\alpha$ * (sum of square of coefficients)\n",
+    "```\n",
+    "\n",
+    "Here, $\\alpha$ is the parameter which balances the amount of emphasis given to minimizing RSS vs minimizing sum of square of coefficients. $\\alpha$ can take various values:\n",
+    "\n",
+    "$\\alpha$ = 0:\n",
+    "- The objective becomes the same as simple linear regression.\n",
+    "- We'll get the same coefficients as simple linear regression.\n",
+    "\n",
+    "$\\alpha$ = $\\infty$:\n",
+    "- The coefficients will be zero. Why? Because of infinite weightage on square of coefficients, anything less than zero will make the objective infinite.\n",
+    "\n",
+    "0 < $\\alpha$ < $\\infty$:\n",
+    "- The magnitude of $\\alpha$ will decide the weightage given to different parts of objective.\n",
+    "- The coefficients will be somewhere between 0 and ones for simple linear regression\n",
+    "\n",
+    "This tells us that any non-zero value would give values less than that of simple linear regression. Let's define a generic function for ridge regression similar to the one defined for simple linear regression:\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn.linear_model import Ridge\n",
+    "def ridge_regression(data, predictors, alpha, models_to_plot={}):"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Note that the function above takes $\\alpha$ as a parameter on initialization. Now, we fit the model:\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "    ridgereg = Ridge(alpha=alpha,normalize=True)\n",
+    "    ridgereg.fit(data[predictors],data['y'])\n",
+    "    y_pred = ridgereg.predict(data[predictors])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "We check to see if a plot is to be made for the entered alpha:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "    if alpha in models_to_plot:\n",
+    "        plt.subplot(models_to_plot[alpha])\n",
+    "        plt.tight_layout()\n",
+    "        plt.plot(data['x'],y_pred)\n",
+    "        plt.plot(data['x'],data['y'],'.')\n",
+    "        plt.title('Plot for alpha: %.3g'%alpha)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Finally, we return the result in pre-defined format:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "    rss = sum((y_pred-data['y'])**2)\n",
+    "    ret = [rss]\n",
+    "    ret.extend([ridgereg.intercept_])\n",
+    "    ret.extend(ridgereg.coef_)\n",
+    "    return(ret)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from sklearn.linear_model import Ridge\n",
+    "def ridge_regression(data, predictors, alpha, models_to_plot={}):\n",
+    "    ridgereg = Ridge(alpha=alpha,normalize=True)\n",
+    "    ridgereg.fit(data[predictors],data['y'])\n",
+    "    y_pred = ridgereg.predict(data[predictors])\n",
+    "    if alpha in models_to_plot:\n",
+    "        plt.subplot(models_to_plot[alpha])\n",
+    "        plt.tight_layout()\n",
+    "        plt.plot(data['x'],y_pred)\n",
+    "        plt.plot(data['x'],data['y'],'.')\n",
+    "        plt.title('Plot for alpha: %.3g'%alpha)\n",
+    "    rss = sum((y_pred-data['y'])**2)\n",
+    "    ret = [rss]\n",
+    "    ret.extend([ridgereg.intercept_])\n",
+    "    ret.extend(ridgereg.coef_)\n",
+    "    return(ret)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Now, lets analyze the result of Ridge regression for 10 different values of $\\alpha$ ranging from 1e-15 to 20. These values have been chosen so that we can easily analyze the trend with change in values of $\\alpha$. \n",
+    "\n",
+    "First, we initialize predictors to be set of 15 powers of x"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "predictors = ['x']\n",
+    "predictors.extend(['x_%d'%i for i in range(2,16)])"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Then, we set the different values of alpha to be tested"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "alpha_ridge = [1e-15, 1e-10, 1e-8, 1e-4, 1e-3,1e-2, 1, 5, 10, 20]"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "We want to store the coefficients, so we initialize a dataframe for them:"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "col = ['rss','intercept'] + ['coef_x_%d'%i for i in range(1,16)]\n",
+    "ind = ['alpha_%.2g'%alpha_ridge[i] for i in range(0,10)]\n",
+    "coef_matrix_ridge = pd.DataFrame(index=ind, columns=col)\n",
+    "models_to_plot = {1e-15:231, 1e-10:232, 1e-4:233, 1e-3:234, 1e-2:235, 5:236}"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Now we actually plot them: "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "for i in range(10):\n",
+    "    coef_matrix_ridge.iloc[i,] = ridge_regression(data, predictors, alpha_ridge[i], models_to_plot)\n",
+    "plt.show()"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Here, we can see that as the value of alpha increases, the model complexity reduces. Though higher values of alpha reduce overfitting, significantly high values can cause underfitting as well, so alpha should be chosen wisely. A widely accept technique is cross-validation, i.e. the value of alpha is iterated over a range of values and the one giving higher cross-validation score is chosen.\n",
+    "\n",
+    "Lets have a look at the value of coefficients in the above models:\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "pd.options.display.float_format = '{:,.2g}'.format\n",
+    "coef_matrix_ridge"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Ridge Regression is a technique used when the data suffers from multicollinearity (independent variables are highly correlated). In multicollinearity, even though the least squares estimates are unbiased, their variances are large which deviates the observed value far from the true value. By adding a degree of bias to the regression estimates, ridge regression reduces the standard errors.\n",
+    "\n",
+    "Ridge regression solves the multicollinearity problem through shrinkage parameter &lambda;, shown below:\n",
+    "\n",
+    "![alt text](https://imgur.com/knpL7Kr.png \"Logo Title Text 1\")\n",
+    "\n",
+    "In this equation, we have two components. First, is the least square term and other is lambda of the summation of $\\beta_2$ (beta- square) where $\\beta$ is the coefficient. This is added to least square term in order to shrink the parameter to have a very low variance.\n"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "### Assumptions\n",
+    "\n",
+    "The assumptions of this regression is same as least squared regression, except normality is not to be assumed."
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.6.5"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}
